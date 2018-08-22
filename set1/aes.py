@@ -172,8 +172,6 @@ def aesEncrypt(bstr_msg, bstr_key, num_bits):
 	# without padding for now
 	# bstr_msg = pad_PKCS7(bstr_msg)
 
-	# TODO: transpose orig. key
-
 	state_iter = stateGenerator(bstr_msg)
 	rounds = {128:10, 192:12, 256: 14}
 	round_keys = aesKeyExpansion(bstr_key)
@@ -208,22 +206,19 @@ def aesEncrypt(bstr_msg, bstr_key, num_bits):
 	return cipher
 		
 
-def aesKeyExpansionCore(bstr_row, rcon_round):
+def aesKeyExpansionCore(bstr_word, rcon_round):
 	"""
 	used in aesKeyExpansion
 	"""
-	# rotate
-	#row = bstr_row[1:] + bytes([bstr_row[0]])
-	row = bytes(rotateList(list(bstr_row), 1, 'l'))
-	row = aesSubBytes(row)
-	row = bytes([row[0] ^ rcon[rcon_round]]) + row[1:]
-	return row
+	word = bytes(rotateList(list(bstr_word), 1, 'l'))
+	word = aesSubBytes(word)
+	word = bytes([word[0] ^ rcon[rcon_round]]) + word[1:]
+	return word
 
 def aesKeyExpansion(bstr_key):
 	"""
 	Returns the roundkeys a list of byte strings
 	TODO: make length parameters variable
-	use rotate function
 	"""
 	if len(bstr_key) != 16 and len(bstr_key) != 24 and len(bstr_key) != 32:
 		print("Invalid key length!")
@@ -242,14 +237,14 @@ def aesKeyExpansion(bstr_key):
 	while len(round_keys) < rounds[numbits]:
 		# on every first 4 byte group of the 16 byte blocks perform rotate, subbytes
 		if offset == 0:
-			row = bytes(prevkey[3])
-			row = aesKeyExpansionCore(row, rcon_round)
+			word = bytes(prevkey[3])
+			word = aesKeyExpansionCore(word, rcon_round)
 			rcon_round += 1
 		else:
-			row = newkey[offset-4:offset]
-		row_from_prevkey = bytes(prevkey.flatten())[offset:offset+4]
-		row = xorBytestrings(row, row_from_prevkey)
-		newkey += row
+			word = newkey[offset-4:offset]
+		word_from_prevkey = bytes(prevkey.flatten())[offset:offset+4]
+		word = xorBytestrings(word, word_from_prevkey)
+		newkey += word
 		offset += 4
 		if offset == 16:
 			offset = 0
@@ -304,6 +299,45 @@ def aesMixColumns(bstr_state):
 				result[i][bnum] ^= mdsLookup(state[i][3], mds_matrix[bnum][3])
 	result = bytes(result.transpose().flatten())
 	return(result)
+
+def aesDecrypt(bstr_cipher, bstr_key):
+	if len(bstr_key) != 16:
+		# no key derivation yet
+		print("Unsuitable key length!")
+		exit(1)
+
+	state_iter = stateGenerator(bstr_cipher)
+	rounds = {128:10, 192:12, 256: 14}
+	round_keys = aesKeyExpansion(bstr_key)
+	cipher = b''
+	for state in state_iter:
+		# initial round
+		#ndarray_state = makeNDArrayFrom(bstr_state, 4, 4)
+		#ndarray_state = aesAddRoundkey(ndarray_state, makeNDArrayFrom(bstr_key, 4, 4))
+		state_trans = bytes(makeNDArrayFrom(state, 4, 4).transpose().flatten())
+		key_trans = bytes(makeNDArrayFrom(bstr_key, 4, 4).transpose().flatten())
+		bstr_state = aesAddRoundkey(state_trans, key_trans)
+		
+		#print(bstr_state)
+
+		# rounds
+		for r in range(0, rounds[num_bits]):
+			if r == 0:
+				# first round no inverse MixColumns
+				bstr_state = aesSubBytes(bstr_state)
+				bstr_state = aesShiftRows(bstr_state)
+				key_trans = bytes(makeNDArrayFrom(round_keys[r], 4, 4).transpose().flatten())
+				bstr_state = aesAddRoundkey(bstr_state, key_trans)
+			else:
+				bstr_state = aesSubBytes(bstr_state)
+				#print(bstr_state)
+				bstr_state = aesShiftRows(bstr_state)
+				bstr_state = aesMixColumns(bstr_state)
+				key_trans = bytes(makeNDArrayFrom(round_keys[r], 4, 4).transpose().flatten())
+				bstr_state = aesAddRoundkey(bstr_state, key_trans)
+		state_result = bytes(makeNDArrayFrom(bstr_state,4,4).transpose().flatten())
+		cipher += state_result
+	return cipher
 
 if __name__ == '__main__':
 	np.set_printoptions(formatter={'int':hex})

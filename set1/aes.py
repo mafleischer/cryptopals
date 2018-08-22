@@ -80,11 +80,13 @@ rcon = [0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 
 
 ########## some helper functions ############
 
+
 def check_chunk(bstr):
 	# check state len
 	if len(bstr) != 16:
 		print("Invalid Chunk length!")
 		exit(1)
+
 
 def rotateList(l, num, direction):
 	'''
@@ -93,16 +95,19 @@ def rotateList(l, num, direction):
 	if direction not in ('l', 'r'):
 		print("rotateList: direction must be 'l' or 'r'")
 		exit(1)
-	# cast to list: to make numpy one dim. arrays lists. Because e.g. numpy array of len 0 (shape (0,)) can't be concatenated
+	# cast to list: to make numpy one dim. arrays lists.
+	# Because e.g. numpy array of len 0 (shape (0,)) can't be concatenated
 	# to longer length arrays
 	if direction == 'l':
 		return(list(l[num:]) + list(l[0:num]))
 	else:
 		return(list(l[-num:]) + list(l[0:-num]))
 
+
 def stateGenerator(bstr_msg):
 	"""
-	takes the whole length of the message as a byte string and returns blocks of it as byte string
+	takes the whole length of the message as a byte
+	string and returns blocks of it as byte string
 	TODO: make block length variable
 	"""
 	if len(bstr_msg) % 16 != 0:
@@ -114,6 +119,7 @@ def stateGenerator(bstr_msg):
 		restmsg = restmsg[16:]
 		yield state
 
+
 def makeNDArrayFrom(bstr, a, b):
 	"""
 	takes a byte string and returns it as a numpy ndarray, a as rows, b as columns. 4x4 for the moment
@@ -123,14 +129,13 @@ def makeNDArrayFrom(bstr, a, b):
 	array.flags.writeable = True
 	return(array.reshape(a,b))
 
+
 def xorBytestrings(bstr1, bstr2):
 	if(len(bstr1) != len(bstr2)):
 		print("xorBytestrings: strings not of equal len")
 		exit(1)
-	result = b''
-	for a, b in zip(bstr1, bstr2):
-		result += bytes([a ^ b])
-	return result
+	return(bytes([a ^ b for (a, b) in zip(bstr1, bstr2)]))
+
 
 def mdsLookup(byte, num):
 	"""
@@ -138,7 +143,7 @@ def mdsLookup(byte, num):
 	lookup byte in table mds_lookup_[num];
 	byte not changed for 1
 	"""
-	if num not in (1,2,3):
+	if num not in (1, 2, 3):
 		print("mds_lookup: invalid num {0}".format(num))
 		exit(1)
 	if num == 1:
@@ -147,6 +152,7 @@ def mdsLookup(byte, num):
 		return mds_lookup_2[byte]
 	else:
 		return mds_lookup_3[byte]
+
 
 def padPKCS7(bstr_msg):
 	print(bstr_msg)
@@ -158,10 +164,12 @@ def padPKCS7(bstr_msg):
 		bstr_msg += bytes([16]) * 16
 	return(bstr_msg)
 
+
 def stripPadding(bstr_cypher):
 	pass
 
 ################# AES functions #####################3
+
 
 def aesEncrypt(bstr_msg, bstr_key, num_bits):
 	if len(bstr_key) != 16:
@@ -173,20 +181,14 @@ def aesEncrypt(bstr_msg, bstr_key, num_bits):
 	# bstr_msg = pad_PKCS7(bstr_msg)
 
 	state_iter = stateGenerator(bstr_msg)
-	rounds = {128:10, 192:12, 256: 14}
+	rounds = {128: 10, 192: 12, 256: 14}
 	round_keys = aesKeyExpansion(bstr_key)
 	cipher = b''
 	for state in state_iter:
-		# initial round
-		#ndarray_state = makeNDArrayFrom(bstr_state, 4, 4)
-		#ndarray_state = aesAddRoundkey(ndarray_state, makeNDArrayFrom(bstr_key, 4, 4))
+		# initial (not actual) round
 		state_trans = bytes(makeNDArrayFrom(state, 4, 4).transpose().flatten())
 		key_trans = bytes(makeNDArrayFrom(bstr_key, 4, 4).transpose().flatten())
 		bstr_state = aesAddRoundkey(state_trans, key_trans)
-		
-		#print(bstr_state)
-
-		# rounds
 		for r in range(0, rounds[num_bits]):
 			if r == rounds[num_bits] - 1:
 				# last round no Mix Columns
@@ -201,7 +203,7 @@ def aesEncrypt(bstr_msg, bstr_key, num_bits):
 				bstr_state = aesMixColumns(bstr_state)
 				key_trans = bytes(makeNDArrayFrom(round_keys[r], 4, 4).transpose().flatten())
 				bstr_state = aesAddRoundkey(bstr_state, key_trans)
-		state_result = bytes(makeNDArrayFrom(bstr_state,4,4).transpose().flatten())
+		state_result = bytes(makeNDArrayFrom(bstr_state, 4, 4).transpose().flatten())
 		cipher += state_result
 	return cipher
 		
@@ -214,6 +216,7 @@ def aesKeyExpansionCore(bstr_word, rcon_round):
 	word = aesSubBytes(word)
 	word = bytes([word[0] ^ rcon[rcon_round]]) + word[1:]
 	return word
+
 
 def aesKeyExpansion(bstr_key):
 	"""
@@ -256,15 +259,15 @@ def aesKeyExpansion(bstr_key):
 			newkey = b''
 	return(round_keys)
 
+
 def aesAddRoundkey(ndarray_state, ndarray_key):
 	#return(np.bitwise_xor(ndarray_state, ndarray_key))
 	return(xorBytestrings(ndarray_state, ndarray_key))
 
+
 def aesSubBytes(bstr_state):
-	substitue = b''
-	for b in bstr_state:
-		substitue += bytes([sbox[b]])
-	return(substitue)
+	return(bytes([sbox[b] for b in bstr_state]))
+
 
 def aesRCon(bstr_state):
 	substitue = b''
@@ -272,11 +275,13 @@ def aesRCon(bstr_state):
 		substitue += rcon[b]
 	return(substitue)
 
+
 def aesShiftRows(bstr_state):
 	arr = makeNDArrayFrom(bstr_state, 4, 4)
 	for i in range(len(arr)):
 		arr[i] = rotateList(arr[i], i, 'l')
 	return(bytes(arr.flatten()))
+
 
 def aesMixColumns(bstr_state):
 	"""
@@ -285,8 +290,8 @@ def aesMixColumns(bstr_state):
 	# go for columns
 	state = makeNDArrayFrom(bstr_state, 4, 4).transpose()
 	mds_matrix = np.array(mds_matrix_flat)
-	mds_matrix = mds_matrix.reshape(4,4)
-	result = np.zeros(shape=(4,4), dtype=np.int8)
+	mds_matrix = mds_matrix.reshape(4, 4)
+	result = np.zeros(shape=(4, 4), dtype=np.int8)
 	# number of columns
 	# iterate over columns
 	for i in range(len(state)):
@@ -300,6 +305,7 @@ def aesMixColumns(bstr_state):
 	result = bytes(result.transpose().flatten())
 	return(result)
 
+
 def aesDecrypt(bstr_cipher, bstr_key):
 	if len(bstr_key) != 16:
 		# no key derivation yet
@@ -307,7 +313,7 @@ def aesDecrypt(bstr_cipher, bstr_key):
 		exit(1)
 
 	state_iter = stateGenerator(bstr_cipher)
-	rounds = {128:10, 192:12, 256: 14}
+	rounds = {128: 10, 192: 12, 256: 14}
 	round_keys = aesKeyExpansion(bstr_key)
 	cipher = b''
 	for state in state_iter:

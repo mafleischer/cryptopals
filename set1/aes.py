@@ -86,12 +86,12 @@ def check_chunk(bstr):
 		print("Invalid Chunk length!")
 		exit(1)
 
-def rotate_list(l, num, direction):
+def rotateList(l, num, direction):
 	'''
 	rotate list by num steps. direction ist r for right and l for left
 	'''
 	if direction not in ('l', 'r'):
-		print("rotate_list: direction must be 'l' or 'r'")
+		print("rotateList: direction must be 'l' or 'r'")
 		exit(1)
 	# cast to list: to make numpy one dim. arrays lists. Because e.g. numpy array of len 0 (shape (0,)) can't be concatenated
 	# to longer length arrays
@@ -100,13 +100,13 @@ def rotate_list(l, num, direction):
 	else:
 		return(list(l[-num:]) + list(l[0:-num]))
 
-def state_generator(bstr_msg):
+def stateGenerator(bstr_msg):
 	"""
 	takes the whole length of the message as a byte string and returns blocks of it as byte string
 	TODO: make block length variable
 	"""
 	if len(bstr_msg) % 16 != 0:
-		print("state_generator: msg len % 16 != 0")
+		print("stateGenerator: msg len % 16 != 0")
 		exit(1)
 	restmsg = bstr_msg
 	while len(restmsg) > 0:
@@ -114,7 +114,7 @@ def state_generator(bstr_msg):
 		restmsg = restmsg[16:]
 		yield state
 
-def make_ndarray_from(bstr, a, b):
+def makeNDArrayFrom(bstr, a, b):
 	"""
 	takes a byte string and returns it as a numpy ndarray, a as rows, b as columns. 4x4 for the moment
 	TODO: make length variable
@@ -123,18 +123,18 @@ def make_ndarray_from(bstr, a, b):
 	array.flags.writeable = True
 	return(array.reshape(a,b))
 
-def xor_bytestrings(bstr1, bstr2):
+def xorBytestrings(bstr1, bstr2):
 	if(len(bstr1) != len(bstr2)):
-		print("xor_bytestrings: strings not of equal len")
+		print("xorBytestrings: strings not of equal len")
 		exit(1)
 	result = b''
 	for a, b in zip(bstr1, bstr2):
 		result += bytes([a ^ b])
 	return result
 
-def mds_lookup(byte, num):
+def mdsLookup(byte, num):
 	"""
-	Used in AES_mix_columns;
+	Used in aesMixColumns;
 	lookup byte in table mds_lookup_[num];
 	byte not changed for 1
 	"""
@@ -148,7 +148,7 @@ def mds_lookup(byte, num):
 	else:
 		return mds_lookup_3[byte]
 
-def pad_PKCS7(bstr_msg):
+def padPKCS7(bstr_msg):
 	print(bstr_msg)
 	# PKCS5 / PKCS7 padding
 	padding_byte = (16 - len(bstr_msg) % 16)
@@ -158,12 +158,12 @@ def pad_PKCS7(bstr_msg):
 		bstr_msg += bytes([16]) * 16
 	return(bstr_msg)
 
-def strip_padding(bstr_cypher):
+def stripPadding(bstr_cypher):
 	pass
 
 ################# AES functions #####################3
 
-def AES_encrypt(bstr_msg, bstr_key, num_bits):
+def aesEncrypt(bstr_msg, bstr_key, num_bits):
 	if len(bstr_key) != 16:
 		# no key derivation yet
 		print("Unsuitable key length!")
@@ -174,17 +174,17 @@ def AES_encrypt(bstr_msg, bstr_key, num_bits):
 
 	# TODO: transpose orig. key
 
-	state_iter = state_generator(bstr_msg)
+	state_iter = stateGenerator(bstr_msg)
 	rounds = {128:10, 192:12, 256: 14}
-	round_keys = AES_key_expansion(bstr_key)
+	round_keys = aesKeyExpansion(bstr_key)
 	cipher = b''
 	for state in state_iter:
 		# initial round
-		#ndarray_state = make_ndarray_from(bstr_state, 4, 4)
-		#ndarray_state = AES_add_roundkey(ndarray_state, make_ndarray_from(bstr_key, 4, 4))
-		state_trans = bytes(make_ndarray_from(state, 4, 4).transpose().flatten())
-		key_trans = bytes(make_ndarray_from(bstr_key, 4, 4).transpose().flatten())
-		bstr_state = AES_add_roundkey(state_trans, key_trans)
+		#ndarray_state = makeNDArrayFrom(bstr_state, 4, 4)
+		#ndarray_state = aesAddRoundkey(ndarray_state, makeNDArrayFrom(bstr_key, 4, 4))
+		state_trans = bytes(makeNDArrayFrom(state, 4, 4).transpose().flatten())
+		key_trans = bytes(makeNDArrayFrom(bstr_key, 4, 4).transpose().flatten())
+		bstr_state = aesAddRoundkey(state_trans, key_trans)
 		
 		#print(bstr_state)
 
@@ -192,36 +192,34 @@ def AES_encrypt(bstr_msg, bstr_key, num_bits):
 		for r in range(0, rounds[num_bits]):
 			if r == rounds[num_bits] - 1:
 				# last round no Mix Columns
-				bstr_state = AES_sub_bytes(bstr_state)
-				bstr_state = AES_shift_rows(bstr_state)
-				key_trans = bytes(make_ndarray_from(round_keys[r], 4, 4).transpose().flatten())
-				bstr_state = AES_add_roundkey(bstr_state, key_trans)
-				print(bstr_state)
+				bstr_state = aesSubBytes(bstr_state)
+				bstr_state = aesShiftRows(bstr_state)
+				key_trans = bytes(makeNDArrayFrom(round_keys[r], 4, 4).transpose().flatten())
+				bstr_state = aesAddRoundkey(bstr_state, key_trans)
 			else:
-				bstr_state = AES_sub_bytes(bstr_state)
+				bstr_state = aesSubBytes(bstr_state)
 				#print(bstr_state)
-				bstr_state = AES_shift_rows(bstr_state)
-				bstr_state = AES_mix_columns(bstr_state)
-				key_trans = bytes(make_ndarray_from(round_keys[r], 4, 4).transpose().flatten())
-				bstr_state = AES_add_roundkey(bstr_state, key_trans)
-				print(bstr_state)
-		state_result = bytes(make_ndarray_from(bstr_state,4,4).transpose().flatten())
+				bstr_state = aesShiftRows(bstr_state)
+				bstr_state = aesMixColumns(bstr_state)
+				key_trans = bytes(makeNDArrayFrom(round_keys[r], 4, 4).transpose().flatten())
+				bstr_state = aesAddRoundkey(bstr_state, key_trans)
+		state_result = bytes(makeNDArrayFrom(bstr_state,4,4).transpose().flatten())
 		cipher += state_result
 	return cipher
 		
 
-def AES_key_expansion_core(bstr_row, rcon_round):
+def aesKeyExpansionCore(bstr_row, rcon_round):
 	"""
-	used in AES_key_expansion
+	used in aesKeyExpansion
 	"""
 	# rotate
 	#row = bstr_row[1:] + bytes([bstr_row[0]])
-	row = bytes(rotate_list(list(bstr_row), 1, 'l'))
-	row = AES_sub_bytes(row)
+	row = bytes(rotateList(list(bstr_row), 1, 'l'))
+	row = aesSubBytes(row)
 	row = bytes([row[0] ^ rcon[rcon_round]]) + row[1:]
 	return row
 
-def AES_key_expansion(bstr_key):
+def aesKeyExpansion(bstr_key):
 	"""
 	Returns the roundkeys a list of byte strings
 	TODO: make length parameters variable
@@ -235,8 +233,8 @@ def AES_key_expansion(bstr_key):
 	round_keys = []
 
 	# transposed since we are operating on the columns
-	#prevkey = make_ndarray_from(bstr_key, 4, 4).transpose()
-	prevkey = make_ndarray_from(bstr_key, 4, 4)
+	#prevkey = makeNDArrayFrom(bstr_key, 4, 4).transpose()
+	prevkey = makeNDArrayFrom(bstr_key, 4, 4)
 
 	newkey = b''
 	offset = 0
@@ -245,52 +243,52 @@ def AES_key_expansion(bstr_key):
 		# on every first 4 byte group of the 16 byte blocks perform rotate, subbytes
 		if offset == 0:
 			row = bytes(prevkey[3])
-			row = AES_key_expansion_core(row, rcon_round)
+			row = aesKeyExpansionCore(row, rcon_round)
 			rcon_round += 1
 		else:
 			row = newkey[offset-4:offset]
 		row_from_prevkey = bytes(prevkey.flatten())[offset:offset+4]
-		row = xor_bytestrings(row, row_from_prevkey)
+		row = xorBytestrings(row, row_from_prevkey)
 		newkey += row
 		offset += 4
 		if offset == 16:
 			offset = 0
-			prevkey = make_ndarray_from(newkey, 4, 4)
+			prevkey = makeNDArrayFrom(newkey, 4, 4)
 			# transpose back and convert to byte string before appending to result list
-			#newkey = bytes(make_ndarray_from(newkey, 4, 4).transpose().flatten())
-			newkey = bytes(make_ndarray_from(newkey, 4, 4).flatten())
+			#newkey = bytes(makeNDArrayFrom(newkey, 4, 4).transpose().flatten())
+			newkey = bytes(makeNDArrayFrom(newkey, 4, 4).flatten())
 			round_keys.append(newkey)
 			newkey = b''
 	return(round_keys)
 
-def AES_add_roundkey(ndarray_state, ndarray_key):
+def aesAddRoundkey(ndarray_state, ndarray_key):
 	#return(np.bitwise_xor(ndarray_state, ndarray_key))
-	return(xor_bytestrings(ndarray_state, ndarray_key))
+	return(xorBytestrings(ndarray_state, ndarray_key))
 
-def AES_sub_bytes(bstr_state):
+def aesSubBytes(bstr_state):
 	substitue = b''
 	for b in bstr_state:
 		substitue += bytes([sbox[b]])
 	return(substitue)
 
-def AES_rcon(bstr_state):
+def aesRCon(bstr_state):
 	substitue = b''
 	for b in bstr_state:
 		substitue += rcon[b]
 	return(substitue)
 
-def AES_shift_rows(bstr_state):
-	arr = make_ndarray_from(bstr_state, 4, 4)
+def aesShiftRows(bstr_state):
+	arr = makeNDArrayFrom(bstr_state, 4, 4)
 	for i in range(len(arr)):
-		arr[i] = rotate_list(arr[i], i, 'l')
+		arr[i] = rotateList(arr[i], i, 'l')
 	return(bytes(arr.flatten()))
 
-def AES_mix_columns(bstr_state):
+def aesMixColumns(bstr_state):
 	"""
 	TODO: make variable
 	"""
 	# go for columns
-	state = make_ndarray_from(bstr_state, 4, 4).transpose()
+	state = makeNDArrayFrom(bstr_state, 4, 4).transpose()
 	mds_matrix = np.array(mds_matrix_flat)
 	mds_matrix = mds_matrix.reshape(4,4)
 	result = np.zeros(shape=(4,4), dtype=np.int8)
@@ -300,31 +298,31 @@ def AES_mix_columns(bstr_state):
 		# iterate over bytes
 		result_byte = 0
 		for bnum in range(len(state[i])):
-				result[i][bnum] = mds_lookup(state[i][0], mds_matrix[bnum][0])
-				result[i][bnum] ^= mds_lookup(state[i][1], mds_matrix[bnum][1])
-				result[i][bnum] ^= mds_lookup(state[i][2], mds_matrix[bnum][2])
-				result[i][bnum] ^= mds_lookup(state[i][3], mds_matrix[bnum][3])
+				result[i][bnum] = mdsLookup(state[i][0], mds_matrix[bnum][0])
+				result[i][bnum] ^= mdsLookup(state[i][1], mds_matrix[bnum][1])
+				result[i][bnum] ^= mdsLookup(state[i][2], mds_matrix[bnum][2])
+				result[i][bnum] ^= mdsLookup(state[i][3], mds_matrix[bnum][3])
 	result = bytes(result.transpose().flatten())
 	return(result)
 
 if __name__ == '__main__':
 	np.set_printoptions(formatter={'int':hex})
-	cipher = AES_encrypt(bytes("ABCDEFGHIJKLMNOP", "ascii"), b'YELLOW SUBMARINE', 128)
-	#AES_mix_columns(b'\x2b\x28\xab\x09\x7e\xae\xf7\xcf\x15\xd2\x15\x4f\x16\xa6\x88\x3c')
+	cipher = aesEncrypt(bytes("ABCDEFGHIJKLMNOP", "ascii"), b'YELLOW SUBMARINE', 128)
+	#aesMixColumns(b'\x2b\x28\xab\x09\x7e\xae\xf7\xcf\x15\xd2\x15\x4f\x16\xa6\x88\x3c')
 	# 328831e0435a3137f6309807a88da234
 	# 2b28ab097eaef7cf15d2154f16a6883c
-	#cipher = AES_encrypt(b'\x32\x88\x31\xe0\x43\x5a\x31\x37\xf6\x30\x98\x07\xa8\x8d\xa2\x34', b'\x2b\x28\xab\x09\x7e\xae\xf7\xcf\x15\xd2\x15\x4f\x16\xa6\x88\x3c', 128)
+	#cipher = aesEncrypt(b'\x32\x88\x31\xe0\x43\x5a\x31\x37\xf6\x30\x98\x07\xa8\x8d\xa2\x34', b'\x2b\x28\xab\x09\x7e\xae\xf7\xcf\x15\xd2\x15\x4f\x16\xa6\x88\x3c', 128)
 	
 	#k = bytes.fromhex('000102030405060708090a0b0c0d0e0f')
 	#d = bytes.fromhex('00112233445566778899aabbccddeeff')
-	#cipher = AES_encrypt(d, k, 128)
+	#cipher = aesEncrypt(d, k, 128)
 
 	# not transposed
 	k = bytes.fromhex('2b7e151628aed2a6abf7158809cf4f3c')
 	d = bytes.fromhex('3243f6a8885a308d313198a2e0370734')
-	cipher = AES_encrypt(d, k, 128)
+	cipher = aesEncrypt(d, k, 128)
 	
 	print(cipher)
 
 	#k = bytes.fromhex('2b7e151628aed2a6abf7158809cf4f3c')
-	#print(AES_key_expansion(k))
+	#print(aesKeyExpansion(k))

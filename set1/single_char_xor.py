@@ -13,10 +13,10 @@ f = open("out.txt", "w")
 
 
 for c in range(0, 256):
-	plain = ""
-	for b in bstr:
-		plain += chr(c ^ b)
-	if plain.isprintable():
-		f.write("key {}    ".format(chr(c)) + plain + "\n")
+    plain = ""
+    for b in bstr:
+        plain += chr(c ^ b)
+    if plain.isprintable():
+        f.write("key {}    ".format(chr(c)) + plain + "\n")
 
 f.close()

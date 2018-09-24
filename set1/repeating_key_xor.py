@@ -9,8 +9,8 @@ bstr = bytes(plain, "ascii")
 kbstr = bytes(key, "ascii")
 cypher = b""
 for b in range(0, len(bstr), 3):
-	for kb in range(0, len(kbstr)):
-		if b + kb < len(bstr):
-			cypher += bytes([bstr[b + kb] ^ kbstr[kb]])
+    for kb in range(0, len(kbstr)):
+        if b + kb < len(bstr):
+            cypher += bytes([bstr[b + kb] ^ kbstr[kb]])
 
 print(binascii.hexlify(cypher))

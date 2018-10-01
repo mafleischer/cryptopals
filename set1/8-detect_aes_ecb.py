@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from crypto_algos.helpers import stateGenerator
+from crypto_algos.attack import blockcipher
 import binascii
 
 """
@@ -22,6 +23,9 @@ if __name__ == "__main__":
 	# count number of times each state appears
 	bstrs_w_highest_state_count = dict()
 	for bstr in bstr_list:
+		if blockcipher.hasBlockRepetition(bstr):
+			print(bstr)
+		"""
 		state_iter = stateGenerator(bstr)
 		state_list = [state for state in state_iter]
 		maxcount = 0
@@ -41,5 +45,6 @@ if __name__ == "__main__":
 			#	maxcount = count
 		#if maxcount >= threshold:
 		#	bstrs_w_highest_state_count[bstr] = maxcount
+		"""
 
-	print(bstrs_w_highest_state_count)
+	#print(bstrs_w_highest_state_count)

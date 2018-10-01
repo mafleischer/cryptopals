@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from aes import stateGenerator
+from crypto_algos.helpers import stateGenerator
 import binascii
 
 """
@@ -13,7 +13,7 @@ if __name__ == "__main__":
 	f.close()
 
 	# keep track of cipher states that appear this many times
-	threshold = 3
+	threshold = 2
 
 	bstr_list = []
 	for hexstr in fcontent:

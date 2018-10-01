@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
-import allcrypto
 import numpy as np
 import collections
+
+from crypto_algos.helpers import rotateList, stateGenerator, makeNDArrayFrom, xorBytestrings
 
 # multiplicative inverse, galois field; used to obscure the relationship between key and cipher
 # composed of balanced highly nonlinear Boolean Functions
@@ -127,64 +128,6 @@ rcon = [0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 
     0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 
     0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d]
 
-########## some helper functions ############
-
-
-def check_chunk(bstr):
-    # check state len
-    if len(bstr) != 16:
-        print("Invalid Chunk length!")
-        exit(1)
-
-
-def rotateList(l, num, direction):
-    '''
-    rotate list by num steps. direction ist r for right and l for left
-    '''
-    if direction not in ('l', 'r'):
-        print("rotateList: direction must be 'l' or 'r'")
-        exit(1)
-    # cast to list: to make numpy one dim. arrays lists.
-    # Because e.g. numpy array of len 0 (shape (0,)) can't be concatenated
-    # to longer length arrays
-    if direction == 'l':
-        return(list(l[num:]) + list(l[0:num]))
-    else:
-        return(list(l[-num:]) + list(l[0:-num]))
-
-
-def stateGenerator(bstr_msg):
-    """
-    takes the whole length of the message as a byte
-    string and returns blocks of it as byte string
-    TODO: make block length variable
-    """
-    if len(bstr_msg) % 16 != 0:
-        print("stateGenerator: msg len % 16 != 0")
-        exit(1)
-    restmsg = bstr_msg
-    while len(restmsg) > 0:
-        state = restmsg[:16]
-        restmsg = restmsg[16:]
-        yield state
-
-
-def makeNDArrayFrom(bstr, a, b):
-    """
-    takes a byte string and returns it as a numpy ndarray, a as rows, b as columns. 4x4 for the moment
-    TODO: make length variable
-    """
-    array = np.frombuffer(bstr, dtype=np.uint8)
-    array.flags.writeable = True
-    return(array.reshape(a,b))
-
-
-def xorBytestrings(bstr1, bstr2):
-    if(len(bstr1) != len(bstr2)):
-        print("xorBytestrings: strings not of equal len")
-        exit(1)
-    return(bytes([a ^ b for (a, b) in zip(bstr1, bstr2)]))
-
 
 def mdsLookup(byte, num):
     """
@@ -218,19 +161,9 @@ def gmul(a, b):
         x >>= 1
     return result
 
-
-def padPKCS7(bstr_msg, block_size):
-    # PKCS5 / PKCS7 padding
-    padding_byte = (block_size - len(bstr_msg) % block_size)
-    if padding_byte != block_size:
-        bstr_msg += bytes([padding_byte]) * padding_byte
-    return(bstr_msg)
-
-
-def stripPadding(bstr_cypher):
-    pass
-
-################# AES functions #####################3
+'''
+################# AES functions #####################
+'''
 
 
 def aesEncrypt(bstr_msg, bstr_key, num_bits, mode='ecb', bstr_IV=None):
@@ -250,22 +183,14 @@ def aesEncrypt(bstr_msg, bstr_key, num_bits, mode='ecb', bstr_IV=None):
     preceding_cipher_block = bstr_IV
 
     for state in state_iter:
-
-        #print(state)
+        if mode == 'cbc':
+            state = xorBytestrings(state, preceding_cipher_block)
 
         # initial (not actual) round
         state_trans = bytes(makeNDArrayFrom(state, 4, 4).transpose().flatten())
         key_trans = bytes(makeNDArrayFrom(bstr_key, 4, 4).transpose().flatten())
 
-        bstr_state = b''
-
-        if mode == 'cbc':
-            bstr_state = None
-
         bstr_state = aesAddRoundkey(state_trans, key_trans)
-
-        #print(bytes(makeNDArrayFrom(bstr_state, 4, 4).transpose().flatten()))
-
 
         for r in range(0, rounds[num_bits]):
             if r == rounds[num_bits] - 1:
@@ -276,15 +201,13 @@ def aesEncrypt(bstr_msg, bstr_key, num_bits, mode='ecb', bstr_IV=None):
                 bstr_state = aesAddRoundkey(bstr_state, key_trans)
             else:
                 bstr_state = aesSubBytes(bstr_state)
-                #print(bstr_state)
                 bstr_state = aesShiftRows(bstr_state)
                 bstr_state = aesMixColumns(bstr_state)
                 key_trans = bytes(makeNDArrayFrom(round_keys[r], 4, 4).transpose().flatten())
                 bstr_state = aesAddRoundkey(bstr_state, key_trans)
-
-            #print(bytes(makeNDArrayFrom(bstr_state, 4, 4).transpose().flatten()))
-
         state_result = bytes(makeNDArrayFrom(bstr_state, 4, 4).transpose().flatten())
+        preceding_cipher_block = state_result
+
         cipher += state_result
     return cipher
         
@@ -312,7 +235,6 @@ def aesKeyExpansion(bstr_key):
     round_keys = []
 
     # transposed since we are operating on the columns
-    #prevkey = makeNDArrayFrom(bstr_key, 4, 4).transpose()
     prevkey = makeNDArrayFrom(bstr_key, 4, 4)
 
     newkey = b''
@@ -334,34 +256,32 @@ def aesKeyExpansion(bstr_key):
             offset = 0
             prevkey = makeNDArrayFrom(newkey, 4, 4)
             # transpose back and convert to byte string before appending to result list
-            #newkey = bytes(makeNDArrayFrom(newkey, 4, 4).transpose().flatten())
             newkey = bytes(makeNDArrayFrom(newkey, 4, 4).flatten())
             round_keys.append(newkey)
             newkey = b''
-    return(round_keys)
+    return round_keys
 
 
 def aesAddRoundkey(ndarray_state, ndarray_key):
-    #return(np.bitwise_xor(ndarray_state, ndarray_key))
-    return(xorBytestrings(ndarray_state, ndarray_key))
+    return xorBytestrings(ndarray_state, ndarray_key)
 
 
 def aesSubBytes(bstr_state):
-    return(bytes([sbox[b] for b in bstr_state]))
+    return bytes([sbox[b] for b in bstr_state])
 
 
 def aesRCon(bstr_state):
     substitue = b''
     for b in bstr_state:
         substitue += rcon[b]
-    return(substitue)
+    return substitue
 
 
 def aesShiftRows(bstr_state):
     arr = makeNDArrayFrom(bstr_state, 4, 4)
     for i in range(len(arr)):
         arr[i] = rotateList(arr[i], i, 'l')
-    return(bytes(arr.flatten()))
+    return bytes(arr.flatten())
 
 
 def aesMixColumns(bstr_state):
@@ -385,7 +305,7 @@ def aesMixColumns(bstr_state):
                 result[i][bnum] ^= mdsLookup(state[i][2], mds_matrix[bnum][2])
                 result[i][bnum] ^= mdsLookup(state[i][3], mds_matrix[bnum][3])
     result = bytes(result.transpose().flatten())
-    return(result)
+    return result
 
     # gmul variant
     """
@@ -405,7 +325,7 @@ def aesMixColumns(bstr_state):
     """
 
 
-def aesDecrypt(bstr_cipher, bstr_key, num_bits):
+def aesDecrypt(bstr_cipher, bstr_key, num_bits, mode='ecb', bstr_IV=None):
     if len(bstr_key) != 16:
         # no key derivation yet
         print("Unsuitable key length!")
@@ -415,6 +335,7 @@ def aesDecrypt(bstr_cipher, bstr_key, num_bits):
     rounds = {128: 10, 192: 12, 256: 14}
     round_keys = aesKeyExpansion(bstr_key)
     cipher = b''
+    prev_cipherstate = bstr_IV
     for state in state_iter:
         # initial round
         bstr_state = bytes(makeNDArrayFrom(state, 4, 4).transpose().flatten())
@@ -435,20 +356,23 @@ def aesDecrypt(bstr_cipher, bstr_key, num_bits):
         key_trans = bytes(makeNDArrayFrom(bstr_key, 4, 4).transpose().flatten())
         bstr_state = aesAddRoundkey(bstr_state, key_trans)
         bstr_state = bytes(makeNDArrayFrom(bstr_state, 4, 4).transpose().flatten())
+        if mode == 'cbc':
+            bstr_state = xorBytestrings(bstr_state, prev_cipherstate)
+            prev_cipherstate = state
         cipher += bstr_state
-
     return cipher
 
 
 def aesInvSubBytes(bstr_state):
-    return(bytes([inv_sbox[b] for b in bstr_state]))
+    return bytes([inv_sbox[b] for b in bstr_state])
 
 
 def aesInvShiftRows(bstr_state):
     arr = makeNDArrayFrom(bstr_state, 4, 4)
     for i in range(len(arr)):
         arr[i] = rotateList(arr[i], i, 'r')
-    return(bytes(arr.flatten()))
+    return bytes(arr.flatten())
+
 
 def aesInvMixColumns(bstr_state):
     """
@@ -467,7 +391,7 @@ def aesInvMixColumns(bstr_state):
             result_array[c][b] ^= gmul(state[c][3], inv_mds_matrix[b][3])
 
     result = bytes(result_array.transpose().flatten())
-    return(result)
+    return result
 
 
 if __name__ == '__main__':
@@ -482,18 +406,3 @@ if __name__ == '__main__':
     #k = bytes.fromhex('2b7e151628aed2a6abf7158809cf4f3c')
     #d = bytes.fromhex('3243f6a8885a308d313198a2e0370734')
     #cipher = aesEncrypt(d, k, 128)
-    
-    k = bytes.fromhex('000102030405060708090a0b0c0d0e0f')
-    d = bytes.fromhex('00112233445566778899aabbccddeeff')
-    cipher = aesEncrypt(d, k, 128)
-    #print(cipher)
-
-    k = b'YELLOW SUBMARINE'
-    f = open("7.txt", "rb")
-    cipher = f.read()
-    f.close()
-
-    #clear = aesDecrypt(cipher, k, 128)
-    #print(clear)
-
-    print(padPKCS7(b'12345678', 16))

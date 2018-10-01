@@ -1,13 +1,14 @@
 import unittest
 import aes
+import helpers
 import numpy as np
 
-class TestAESHelpers(unittest.TestCase):
+class TestHelpers(unittest.TestCase):
 
     def testStateGenerator(self):
         bytenum = 16
         bstr_msg = b'1234123412341234abcdabcdabcdabcd'
-        stategen = aes.stateGenerator(bstr_msg)
+        stategen = helpers.stateGenerator(bstr_msg)
         count = 0
         states = []
         for s in stategen:
@@ -19,13 +20,13 @@ class TestAESHelpers(unittest.TestCase):
     def testXorBytestrings(self):
         bstr1 = b'\x01\x01\x01\x01\x01\x01\x01\x01'
         bstr2 = b'\x00\x00\x00\x00\x00\x00\x00\x00'
-        result = aes.xorBytestrings(bstr1, bstr2)
+        result = helpers.xorBytestrings(bstr1, bstr2)
         self.assertEqual(result, b'\x01\x01\x01\x01\x01\x01\x01\x01')
 
     def testRotateList(self):
         l = [1,2,3,4]
-        ll = aes.rotateList(l, 2, 'l')
-        lr = aes.rotateList(l, 3, 'r')
+        ll = helpers.rotateList(l, 2, 'l')
+        lr = helpers.rotateList(l, 3, 'r')
         self.assertEqual(ll, [3,4,1,2])
         self.assertEqual(lr, [2,3,4,1])
 
@@ -76,7 +77,7 @@ class TestAESEncrypt(unittest.TestCase):
         result = aes.aesMixColumns(bstr_teststate)
         self.assertEqual(result, expected)
 
-    def testAESEnrypt(self):
+    def testAESEnryptECB(self):
         #key = bytes.fromhex('2b7e151628aed2a6abf7158809cf4f3c')
         #data = bytes.fromhex('3243f6a8885a308d313198a2e0370734')
         #cipher_expected = b'9%\x84\x1d\x02\xdc\t\xfb\xdc\x11\x85\x97\x19j\x0b2'
@@ -86,6 +87,19 @@ class TestAESEncrypt(unittest.TestCase):
         data = bytes.fromhex('00112233445566778899aabbccddeeff')
         cipher_expected = bytes.fromhex('69c4e0d86a7b0430d8cdb78070b4c55a')
         cipher = aes.aesEncrypt(data, key, 128)
+        self.assertEqual(cipher, cipher_expected)
+
+    def testAESEnryptCBC(self):
+        #key = bytes.fromhex('2b7e151628aed2a6abf7158809cf4f3c')
+        #data = bytes.fromhex('3243f6a8885a308d313198a2e0370734')
+        #cipher_expected = b'9%\x84\x1d\x02\xdc\t\xfb\xdc\x11\x85\x97\x19j\x0b2'
+        #cipher = aes.aesEncrypt(data, key, 128)
+        #self.assertEqual(cipher, cipher_expected)
+        key = bytes.fromhex('000102030405060708090a0b0c0d0e0f')
+        data = bytes.fromhex('00112233445566778899aabbccddeeff')
+        cipher_expected = b'|\x99\xf4+n\xe5\x030\x9cl\x1ag\xe9z\xc2B'
+        IV = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff'
+        cipher = aes.aesEncrypt(data, key, 128, mode='cbc', bstr_IV=IV)
         self.assertEqual(cipher, cipher_expected)
 
 
@@ -114,11 +128,19 @@ class TestAESDecrypt(unittest.TestCase):
         result = aes.aesInvMixColumns(bstr_teststate)
         self.assertEqual(result, expected)
 
-    def testAESDecrypt(self):
+    def testAESDecryptECB(self):
         key = bytes.fromhex('000102030405060708090a0b0c0d0e0f')
         clear_expected  = bytes.fromhex('00112233445566778899aabbccddeeff')
         cipher = bytes.fromhex('69c4e0d86a7b0430d8cdb78070b4c55a')
         clear = aes.aesDecrypt(cipher, key, 128)
+        self.assertEqual(clear, clear_expected)
+
+    def testAESDecryptCBC(self):
+        key = bytes.fromhex('000102030405060708090a0b0c0d0e0f')
+        clear_expected  = bytes.fromhex('00112233445566778899aabbccddeeff')
+        cipher = b'|\x99\xf4+n\xe5\x030\x9cl\x1ag\xe9z\xc2B'
+        IV = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff'
+        clear = aes.aesDecrypt(cipher, key, 128, mode='cbc', bstr_IV=IV)
         self.assertEqual(clear, clear_expected)
 
 

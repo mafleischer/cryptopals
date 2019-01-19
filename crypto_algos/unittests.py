@@ -1,7 +1,11 @@
 import unittest
 import aes
 import helpers
+import misc
 import numpy as np
+from crypto_algos import challenge_specific
+from crypto_algos.attack.blockcipher import ecb_chosen_plaintext
+
 
 class TestHelpers(unittest.TestCase):
 
@@ -24,11 +28,12 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(result, b'\x01\x01\x01\x01\x01\x01\x01\x01')
 
     def testRotateList(self):
-        l = [1,2,3,4]
+        l = [1, 2, 3, 4]
         ll = helpers.rotateList(l, 2, 'l')
         lr = helpers.rotateList(l, 3, 'r')
-        self.assertEqual(ll, [3,4,1,2])
-        self.assertEqual(lr, [2,3,4,1])
+        self.assertEqual(ll, [3, 4, 1, 2])
+        self.assertEqual(lr, [2, 3, 4, 1])
+
 
 class TestAESEncrypt(unittest.TestCase):
 
@@ -38,7 +43,8 @@ class TestAESEncrypt(unittest.TestCase):
     def testAESAddRoundkey(self):
         k1 = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 0]])
         k2 = np.array([[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]])
-        expected = np.array([[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 0, 1]])
+        expected = np.array([[1, 1, 1, 1], [1, 1, 1, 1],
+                             [1, 1, 1, 1], [1, 1, 0, 1]])
         k1 = bytes(k1.flatten())
         k2 = bytes(k2.flatten())
         expected = bytes(expected.flatten())
@@ -130,19 +136,37 @@ class TestAESDecrypt(unittest.TestCase):
 
     def testAESDecryptECB(self):
         key = bytes.fromhex('000102030405060708090a0b0c0d0e0f')
-        clear_expected  = bytes.fromhex('00112233445566778899aabbccddeeff')
+        clear_expected = bytes.fromhex('00112233445566778899aabbccddeeff')
         cipher = bytes.fromhex('69c4e0d86a7b0430d8cdb78070b4c55a')
         clear = aes.aesDecrypt(cipher, key, 128)
         self.assertEqual(clear, clear_expected)
 
     def testAESDecryptCBC(self):
         key = bytes.fromhex('000102030405060708090a0b0c0d0e0f')
-        clear_expected  = bytes.fromhex('00112233445566778899aabbccddeeff')
+        clear_expected = bytes.fromhex('00112233445566778899aabbccddeeff')
         cipher = b'|\x99\xf4+n\xe5\x030\x9cl\x1ag\xe9z\xc2B'
         IV = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff'
         clear = aes.aesDecrypt(cipher, key, 128, mode='cbc', bstr_IV=IV)
         self.assertEqual(clear, clear_expected)
 
+
+class TestBlockCipherAttack(unittest.TestCase):
+    # def testECBChosenPlaintext(self):
+    #    blockcipher.ecbChosenPlaintext()
+    def testECBByteOracle(self):
+        key = b'1234567812345678'
+        secret_fn = challenge_specific.setupECBSecretMaker(key, unittest_secret_portion=b'XYZ')
+        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(b'AAAAAAAAAAAAAAXY', secret_fn, 2), True)
+        secret_fn = challenge_specific.setupECBSecretMaker(key, unittest_secret_portion=b'Rollin\' in ')
+        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(b'AAAAARollin\' in ', secret_fn, 11), True)
+
+class TestMisc(unittest.TestCase):
+
+    def testPadPKCS7(self):
+        txt = b'12345678123456'
+        expected_padded = b'12345678123456\x02\x02'
+        padded = misc.padPKCS7(txt, 16)
+        self.assertEqual(padded, expected_padded)
 
 if __name__ == '__main__':
     unittest.main()

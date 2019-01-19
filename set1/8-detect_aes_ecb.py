@@ -23,7 +23,7 @@ if __name__ == "__main__":
 	# count number of times each state appears
 	bstrs_w_highest_state_count = dict()
 	for bstr in bstr_list:
-		if blockcipher.hasBlockRepetition(bstr):
+		if blockcipher.isECB(bstr):
 			print(bstr)
 		"""
 		state_iter = stateGenerator(bstr)

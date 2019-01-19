@@ -17,8 +17,8 @@ makeSecret = setupECBSecretMaker(key)
 clear = ecb_chosen_plaintext.ecbChosenPlaintext(makeSecret)
 print(clear)
 
-#print(aes.aesEncrypt(b'xxxxxxxxxxxxxxxR', key, 128, mode='ecb', bstr_IV=None))
-#print(aes.aesEncrypt(b'xxxxxxxxxxxxxxxH', key, 128, mode='ecb', bstr_IV=None))
+#print(aes.aesEncrypt(b'xxxxxxRollin\' in', key, 128, mode='ecb', bstr_IV=None))
+#print(aes.aesEncrypt(b'xxxxxxRollin\' ic', key, 128, mode='ecb', bstr_IV=None))
 
 
 #block_iter = cpt_functs.createPlainBlocks()

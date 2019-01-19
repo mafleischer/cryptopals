@@ -155,10 +155,11 @@ class TestBlockCipherAttack(unittest.TestCase):
     #    blockcipher.ecbChosenPlaintext()
     def testECBByteOracle(self):
         key = b'1234567812345678'
+        # secretmaker uses padding
         secret_fn = challenge_specific.setupECBSecretMaker(key, unittest_secret_portion=b'XYZ')
         self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(b'AAAAAAAAAAAAAAXY', secret_fn, 2), True)
-        secret_fn = challenge_specific.setupECBSecretMaker(key, unittest_secret_portion=b'Rollin\' in ')
-        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(b'AAAAARollin\' in ', secret_fn, 11), True)
+        secret_fn = challenge_specific.setupECBSecretMaker(key, unittest_secret_portion=b'Rollin\' in')
+        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(b'xxxxxxRollin\' in', secret_fn, 10), True)
 
 class TestMisc(unittest.TestCase):
 

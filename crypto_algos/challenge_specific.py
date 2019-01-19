@@ -10,7 +10,7 @@ def setupECBSecretMaker(bstr_key, unittest_secret_portion=None):
         aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
         dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK""".replace('\n', '')
     to_crack = binascii.a2b_base64(to_crack_b64)
-    to_crack = b'Rollin\' in '
+    #to_crack = b'Rollin\' in'
 
     if unittest_secret_portion:
         to_crack = unittest_secret_portion

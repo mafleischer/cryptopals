@@ -85,7 +85,11 @@ def _ecbByteOracle(bstr_chosen, secret_fn, byte_offset):
     # print(cipher_nocut)
     # print(cipher_cut)
     len_chosen = len(bstr_chosen)
-    if cipher_nocut[len_chosen - 1] == cipher_cut[len_chosen - 1]:
+    # if cipher_nocut[len_chosen - 1] == cipher_cut[len_chosen - 1]:
+    block_start = len_chosen - 1 - 15
+    block_end = len_chosen - 1
+    # if cipher_nocut[len_chosen - 1] == cipher_cut[len_chosen - 1]:
+    if cipher_nocut[block_start:block_end + 1] == cipher_cut[block_start:block_end + 1]:
         #    print(chr(cipher_nocut[len_chosen - 1]))
         #    print(chr(cipher_cut[len_chosen - 1]))
         return True
@@ -108,7 +112,7 @@ def ecbChosenPlaintext(secret_fn):
         exit(1)
     # for entire printable range
     # chars_to_test = bytes(code for code in range(32, 127))
-    chars_to_test = b' \',-.?05abcdeghijlmnoprstuvwyDNRTW\n'
+    chars_to_test = b' \',-.?05abcdeghijlmnoprstuvwyDINRTW\n'
     blocksize = ecbmisc.discoverBlocksize(secret_fn(b''))
     len_cipher_no_chosen = len(secret_fn(b''))
     # length of chosen plain % [blocksize] with which no padding is applied = length of
@@ -124,73 +128,27 @@ def ecbChosenPlaintext(secret_fn):
     # portion; w/o padding
     len_chosen = len_cipher_no_chosen
 
-    # a map of {< int, is byte offset in secret portion> : <integer list here, byte values that fit for offset>}
-    dict_pos_candidates = dict()
-    clear = bytearray()
+    clear = b''
     num_discovered_bytes = 0
     while num_discovered_bytes != len_cipher_wo_padding:
-        # position of byte we want to discover in the secret cipher portion
-        byte_offset = len(clear) + 1
-        # just for having a cipher with entire chosen plain to lookup the
-        # byte in the secret portion
-        cipher = secret_fn(bstr_chosen_plain + b'x')
-        byte_candidates = []
-        found = 0
-        while found == 0:
-            next_clear = b''
-            for byte_to_test_for in chars_to_test:
+        for char in chars_to_test:
+            #print("Testing byte {0}".format(chr(char)))
+            bstr_chosen_plain += bytes([char])
 
-                #if byte_offset == 10 and chr(byte_to_test_for) == 'c':
-                #    byte_to_test_for = ord('n')
-                print("Offset {0} and byte {1}".format(byte_offset, chr(byte_to_test_for)))
+            #if _ecbByteOracle(b'xxxxxxRollin\' ic', secret_fn, 10):
+                # if _ecbByteOracle(bstr_chosen_plain, secret_fn, 10):
+                #print("Test true")
+            #else:
+                #print("Test false")
+            #print(bstr_chosen_plain)
 
-                if _ecbByteOracle(bstr_chosen_plain + (b'%c' % byte_to_test_for), secret_fn, byte_offset):
-                    found = 1
-                    print("Discovered byte {0} for byte offset {1}".format(
-                        chr(byte_to_test_for), byte_offset))
-                    # append the first byte for that offset to clear text
-                    if not byte_candidates:
-                        next_in_clear = byte_to_test_for
-                    # append all other bytes for that offset to candidate list
-                    else:
-                        byte_candidates.append(bytes([byte_to_test_for]))
-                    # break
-            clear += b'%c' % next_in_clear
-            bstr_chosen_plain += b'%c' % next_in_clear
-            del bstr_chosen_plain[0]
-            print(clear)
-            print(byte_candidates)
-
-
-
-            if found == 0:
-                
-                print(dict_pos_candidates)
-                print(byte_offset)
-
-                print("Byte not found. This is the clear text so far:\n {0}".format(clear))
-                backsteps = int(input("Go back how many bytes?: "))
-                for pos in range(byte_offset - backsteps + 1, byte_offset + 1):
-                    if pos in dict_pos_candidates:
-                        del dict_pos_candidates[pos]
-
-                byte_offset -= backsteps
-                num_discovered_bytes -= backsteps
-
-                if not dict_pos_candidates[byte_offset]:
-                    print("No more byte candidates! Exiting.")
-                    exit(1)
-                next_byte = dict_pos_candidates[byte_offset][0]
-                del clear[-backsteps:]
-                clear[-1] = b'%c' % next_byte
-                del bstr_chosen_plain[-backsteps:]
-                bstr_chosen_plain[-1] = b'%c' % next_byte
-                bstr_chosen_plain = (b'x' * backsteps) + bstr_chosen_plain
-                del dict_pos_candidates[byte_offset][0]
-                found = 1
-            else:
-                dict_pos_candidates[byte_offset] = byte_candidates
-                byte_candidates = []
+            if _ecbByteOracle(bstr_chosen_plain, secret_fn, num_discovered_bytes + 1):
+                print("Discovered byte {0}".format(chr(char)))
+                clear += bytes([char])
                 num_discovered_bytes += 1
+                del bstr_chosen_plain[0]
+                break
+            else:
+                del bstr_chosen_plain[-1]
 
     return clear

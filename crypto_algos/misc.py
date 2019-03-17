@@ -31,11 +31,16 @@ class Secret:
 
 def padPKCS7(bstr_msg, block_bytenum):
     # PKCS5 / PKCS7 padding
+    bstr_msg += bytes([block_bytenum]) * block_bytenum
     padding_byte = (block_bytenum - len(bstr_msg) % block_bytenum)
     if padding_byte != block_bytenum:
         bstr_msg += bytes([padding_byte]) * padding_byte
     return bstr_msg
 
 
-def unpadPKCS7(bstr_msg):
-    pass
+def unpadPKCS7(bstr_msg, block_bytenum):
+    padding_byte = bstr_msg[-1]
+    if padding_byte != block_bytenum:
+    	bstr_msg = bstr_msg[:-padding_byte]
+    bstr_msg = bstr_msg[:-block_bytenum]
+    return bstr_msg

@@ -110,7 +110,55 @@ def ecbChosenPlaintext(secret_fn):
     if not ecbmisc.isECB(secret_fn(b'A' * 16 * 100)):
         print("Cipher is not ECB!")
         exit(1)
-    # for entire printable range
+    # for entire printable range:
+    # chars_to_test = bytes(code for code in range(32, 127))
+    chars_to_test = b' \',-.?05abcdeghijlmnoprstuvwyDINRTW\n'
+    blocksize = ecbmisc.discoverBlocksize(secret_fn(b''))
+    len_cipher_no_chosen = len(secret_fn(b''))
+    # length of chosen plain % [blocksize] with which no padding is applied = length of
+    # the padding with no chosen plain
+    len_padding = _findECBCipherBlockJumpLen(secret_fn)
+    len_cipher_wo_padding = len_cipher_no_chosen - len_padding
+    # this is one byte short. The test byte will be appended in the loop
+    # below
+    #bstr_chosen_plain = bytearray(os.urandom(len_cipher_no_chosen))
+    #del bstr_chosen_plain[-1]
+    bstr_chosen_plain = bytearray(b'x') * (len_cipher_no_chosen - 1)
+    # length of chosen that has length of the secret portion + secret
+    # portion; w/o padding
+    len_chosen = len_cipher_no_chosen
+
+    clear = b''
+    num_discovered_bytes = 0
+    while num_discovered_bytes != len_cipher_wo_padding:
+        for char in chars_to_test:
+            #print("Testing byte {0}".format(chr(char)))
+            bstr_chosen_plain += bytes([char])
+
+            #if _ecbByteOracle(b'xxxxxxRollin\' ic', secret_fn, 10):
+                # if _ecbByteOracle(bstr_chosen_plain, secret_fn, 10):
+                #print("Test true")
+            #else:
+                #print("Test false")
+            #print(bstr_chosen_plain)
+
+            if _ecbByteOracle(bstr_chosen_plain, secret_fn, num_discovered_bytes + 1):
+                print("Discovered byte {0}".format(chr(char)))
+                clear += bytes([char])
+                num_discovered_bytes += 1
+                del bstr_chosen_plain[0]
+                break
+            else:
+                del bstr_chosen_plain[-1]
+
+    return clear
+
+
+def ecbChosenPlaintextPrepend(secret_fn):
+    if not ecbmisc.isECB(secret_fn(b'A' * 16 * 100)):
+        print("Cipher is not ECB!")
+        exit(1)
+    # for entire printable range:
     # chars_to_test = bytes(code for code in range(32, 127))
     chars_to_test = b' \',-.?05abcdeghijlmnoprstuvwyDINRTW\n'
     blocksize = ecbmisc.discoverBlocksize(secret_fn(b''))

@@ -4,6 +4,7 @@ import numpy as np
 import collections
 
 from crypto_algos.helpers import rotateList, stateGenerator, makeNDArrayFrom, xorBytestrings
+from crypto_algos import misc
 
 # multiplicative inverse, galois field; used to obscure the relationship between key and cipher
 # composed of balanced highly nonlinear Boolean Functions
@@ -173,8 +174,7 @@ def aesEncrypt(bstr_msg, bstr_key, num_bits, mode='ecb', bstr_IV=None):
         exit(1)
 
     # without padding for now
-    # bstr_msg = pad_PKCS7(bstr_msg)
-
+    #bstr_msg = misc.padPKCS7(bstr_msg, 16)
     state_iter = stateGenerator(bstr_msg)
     rounds = {128: 10, 192: 12, 256: 14}
     round_keys = aesKeyExpansion(bstr_key)
@@ -360,6 +360,7 @@ def aesDecrypt(bstr_cipher, bstr_key, num_bits, mode='ecb', bstr_IV=None):
             bstr_state = xorBytestrings(bstr_state, prev_cipherstate)
             prev_cipherstate = state
         cipher += bstr_state
+        #cipher = misc.unpadPKCS7(cipher, 16)
     return cipher
 
 

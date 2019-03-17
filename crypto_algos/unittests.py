@@ -153,21 +153,33 @@ class TestAESDecrypt(unittest.TestCase):
 class TestBlockCipherAttack(unittest.TestCase):
     # def testECBChosenPlaintext(self):
     #    blockcipher.ecbChosenPlaintext()
+
     def testECBByteOracle(self):
         key = b'1234567812345678'
         # secretmaker uses padding
-        secret_fn = challenge_specific.setupECBSecretMaker(key, unittest_secret_portion=b'XYZ')
-        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(b'AAAAAAAAAAAAAAXY', secret_fn, 2), True)
-        secret_fn = challenge_specific.setupECBSecretMaker(key, unittest_secret_portion=b'Rollin\' in')
-        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(b'xxxxxxRollin\' in', secret_fn, 10), True)
+        secret_fn = challenge_specific.setupECBSecretMaker(
+            key, unittest_secret_portion=b'XYZ')
+        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(
+            b'AAAAAAAAAAAAAAXY', secret_fn, 2), True)
+        secret_fn = challenge_specific.setupECBSecretMaker(
+            key, unittest_secret_portion=b'Rollin\' in')
+        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(
+            b'xxxxxxRollin\' in', secret_fn, 10), True)
+
 
 class TestMisc(unittest.TestCase):
 
     def testPadPKCS7(self):
         txt = b'12345678123456'
-        expected_padded = b'12345678123456\x02\x02'
+        expected_padded = b'12345678123456\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x02\x02'
         padded = misc.padPKCS7(txt, 16)
         self.assertEqual(padded, expected_padded)
+
+    def testUnpadPKCS7(self):
+        txt = b'12345678123456\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x02\x02'
+        expected_unpadded = b'12345678123456'
+        unpadded = misc.unpadPKCS7(txt, 16)
+        self.assertEqual(unpadded, expected_unpadded)
 
 if __name__ == '__main__':
     unittest.main()

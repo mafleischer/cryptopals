@@ -1,0 +1,254 @@
+2019-03-18 23:12:37,351 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(222):
+ Finished marking blocks:
+b'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxx'
+2019-03-18 23:12:37,351 INFO ecb_chosen_plaintext ecbChosenPlaintextPrepend(224):
+ ##### Find secret portion length #####
+2019-03-18 23:12:37,352 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"v2\r\xde\xd3\xfc+\ttX%\x1d\x861\xf4OLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x05\x05\x05\x05\x05"
+
+2019-03-18 23:12:37,433 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:12:37,433 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"y\xe7S\xfa\xcc\xef1\xad\xf5Kv\xbfy\x9aAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x08\x08\x08\x08\x08\x08\x08\x08"
+
+2019-03-18 23:12:37,515 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:12:37,515 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\x88\x01l\xb8\x03\xc3(\x1c\x9a\xf9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c"
+
+2019-03-18 23:12:37,597 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:12:37,597 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xf4Y1\\\xe1=\xad\xb5\xde|\xdb\xa0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\n\n\n\n\n\n\n\n\n\n"
+
+2019-03-18 23:12:37,679 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:12:37,679 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"o\x1c\xb2\xd1H\xefrJ\x9a\xd8\x97\xceO\xf1\xf1\xa9\x12\xdc\xb5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x03\x03\x03"
+
+2019-03-18 23:12:37,761 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:12:37,761 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\\[\xab\xd1a \xb2\x8e\xefj\xaf.q\xf3\xa1\xe6\xbd\x92\xcd1\xa6\xd7?\x10\x13\xf8\x15\x88\xb7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\t\t\t\t\t\t\t\t\t"
+
+2019-03-18 23:12:37,848 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:12:37,849 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xbdIT\x95\xfcJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10"
+
+2019-03-18 23:12:37,925 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:12:37,925 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xa0F\xf6\xd4\x82u\xda\\Z\xd4\x8c2\xb9\xd3\xab\xe9-\x03\x90AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x03\x03\x03"
+
+2019-03-18 23:12:38,007 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:12:38,007 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"mZY\xe9\xc6\x05q&c\x16\x95\r\xe0U\xb8o\x04\xd4\xb0PQr\x86\xd3\x81i\x17\x98_\xbegPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x06\x06\x06\x06\x06\x06"
+
+2019-03-18 23:12:38,095 DEBUG ecb_chosen_plaintext _findDuplicateBlockPairs(87):
+ Found duplicate block neighbors: b'\x1f\x0cp\x1f\x85\x9c\xa6\x0e\xc4j\xee\x1d\xd6j\x95\t'
+Position after: 64
+2019-03-18 23:12:38,096 INFO ecb_chosen_plaintext ecbChosenPlaintextPrepend(233):
+ Secret portion length (includes padding): 160
+2019-03-18 23:15:39,455 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b'{\xcf\x01\x8f\xdf\x9d\xfe`\x05\x8b\xd90\x8e\x9b\xa1Gz\x9f?\xaa\xdc#0\xe7\xd37\x17d\xbb\xbc\xea\xca"\xf8\n\xd2@\xdeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin\' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10'
+
+2019-03-18 23:15:40,178 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xe9\xf7W\xcaH\xa8\xe1gRollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e"
+
+2019-03-18 23:15:40,250 INFO ecb_chosen_plaintext ecbChosenPlaintextPrepend(211):
+ ##### Creating marking blocks #####
+2019-03-18 23:15:40,250 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAx'
+2019-03-18 23:15:40,250 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxx'
+2019-03-18 23:15:40,251 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxx'
+2019-03-18 23:15:40,251 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxx'
+2019-03-18 23:15:40,251 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxx'
+2019-03-18 23:15:40,251 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxx'
+2019-03-18 23:15:40,251 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxx'
+2019-03-18 23:15:40,251 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxx'
+2019-03-18 23:15:40,251 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxx'
+2019-03-18 23:15:40,251 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxx'
+2019-03-18 23:15:40,251 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxx'
+2019-03-18 23:15:40,252 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxx'
+2019-03-18 23:15:40,252 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxx'
+2019-03-18 23:15:40,252 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxx'
+2019-03-18 23:15:40,252 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(221):
+ Created marking block b'xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxx'
+2019-03-18 23:15:40,252 DEBUG ecb_chosen_plaintext ecbChosenPlaintextPrepend(222):
+ Finished marking blocks:
+b'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxxxxxxxxxxxxxxx'
+2019-03-18 23:15:40,252 INFO ecb_chosen_plaintext ecbChosenPlaintextPrepend(224):
+ ##### Find secret portion length #####
+2019-03-18 23:15:40,252 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xa1\x83\x9c;\x9a\xa4\x88\x8b\x02-\x95\xf7M4\xf6}\xd0\xef7HU\xedAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10"
+
+2019-03-18 23:15:40,338 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:40,338 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\x14\xec\xe7b\xc5\xf0\xbc\xc0\xec\x14\x14\xd9Z\xa6\x99\xda\x81\x97\x02z7\x84]Xj\xc4f\x19\x10`\xe2\xf1\xcb\x1cZ6-CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10"
+
+2019-03-18 23:15:40,429 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:40,430 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xcfA\xdbh\xc6\xf0\x93p\x07\x99\xe8\xf7u\xf3\x87\xaa\xcc\xf0\xd2i\x98AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x01"
+
+2019-03-18 23:15:40,515 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:40,515 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xc0\xeb\x12.o:\x9aXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e"
+
+2019-03-18 23:15:40,600 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:40,600 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"c\x03+\x13\xf7\x08\xd7\xa6\xef\xe2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c"
+
+2019-03-18 23:15:40,686 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:40,686 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xfdF&O\x06J\x1c\xd8>\x9a\xb2\x87\xb4\xcc\x86:\xb6eC\x86D\x8d\xd0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f"
+
+2019-03-18 23:15:40,778 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:40,778 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"@\x82\xe1J\x82\x19\xff\xdd\x8b\xa7W\x10\r\ts\xd3\xcc\x1f\xd8\xec\x0f\x90Q\x81\x1c\x82\xafAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b"
+
+2019-03-18 23:15:40,870 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:40,871 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"E\xeb\x9d\xf1\xe1\xd7&\x80\x165\x10,\xcb\xe35O\x85AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x05\x05\x05\x05\x05"
+
+2019-03-18 23:15:40,956 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:40,956 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xd4Z\xbf\xd2\x89\x99\xc5\xc2c\xb6\xad\xa3&\xc8\x0f\x8f/=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x04\x04\x04\x04"
+
+2019-03-18 23:15:41,042 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,043 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xf8P\xc0\xfb-\xb2\xe8\xb6z\x1fVkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\n\n\n\n\n\n\n\n\n\n"
+
+2019-03-18 23:15:41,128 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,128 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\x0c\xd9Rr&\x91b\xe39\xcc\xe1\x99[\xdc\x9c\xd0\x18AY\x9d\xcc\xe7\x85\x89AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e"
+
+2019-03-18 23:15:41,220 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,221 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"%\xc4$>9\xd8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10"
+
+2019-03-18 23:15:41,300 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,300 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xcd\xed\n{\xb5\xc6\xa9\x9f\xaazF\xe0\xe2\xedl\xcc^\n\xe7\xf4\x9ec\x0eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f"
+
+2019-03-18 23:15:41,392 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,393 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xdb\xab0e\xa6\x8a8\x81\x03\x1b\x1a\x90\\\x15\xc5)\xab\x8dQlu\xd1^AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f"
+
+2019-03-18 23:15:41,485 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,485 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xcc\x9c@V\x0f\x9d)N\xbft\x9f\xa4\x95\xee[f\x86}\x1d\x97[\xa0/\xfc4\x94\x94\xe7j\xb4N!X\xbc&AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x03\x03\x03"
+
+2019-03-18 23:15:41,577 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,577 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xda\xb8\xb6\xc8\x88\xf8u\xb6\x1a;\xca\x1f%\xa1b\x03\xb5T1Ws\xc6\xffQ\xd8UV\xea\x16P\x04\xa1\x98\xf3\xe1\x01R\xe9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10"
+
+2019-03-18 23:15:41,668 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,669 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b":\xffS\x954\x089Ge^>\xee\x8c]AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x08\x08\x08\x08\x08\x08\x08\x08"
+
+2019-03-18 23:15:41,754 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,754 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\x1bB\xac\xe5\x8e\xb8\x90s#\xc5\xeb\xc4\xaauV\xff\x19\xf2\x0f\x0f\x90\xe4\xc1N|\x1e\x84dAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\n\n\n\n\n\n\n\n\n\n"
+
+2019-03-18 23:15:41,846 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,846 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b'"\'_\x7f\xf7\xfdY\xe1\xf1|\x01\x83\x80\x93\xeb\x88\xb5Zx\x99 \xacO\x85\x85\xae\xcdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin\' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b'
+
+2019-03-18 23:15:41,938 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:41,938 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"~|\x04\x80Q\xb7\x1c*\x80\\\x06Z<_)\x00\xaa\xce\x01\xfcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x02\x02"
+
+2019-03-18 23:15:42,023 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:42,023 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\xbf\x06cL7\x9e\x895 \xdb\xe1\xf2=\xb8\xf7{]\x93\x93\xf4\x95\xe1\xf8\xf2[~\xb0\xc2\xa2v\x98\t\xd9e\xb0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x03\x03\x03"
+
+2019-03-18 23:15:42,114 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:42,115 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"\x91\x0fK\xa1\xf8\xb5\xe6Y\xd0_d\xa4PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\t\t\t\t\t\t\t\t\t"
+
+2019-03-18 23:15:42,199 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:42,200 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"|\xbcZ\x0e9\x92@\xee\x86\xbf6D\xac )\xb6s\xc3W\xb5,o\xcc4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e"
+
+2019-03-18 23:15:42,291 WARNING ecb_chosen_plaintext _findDuplicateBlockPairs(89):
+ Found no duplicate blocks.
+2019-03-18 23:15:42,291 DEBUG challenge_specific _ecbAppendMakeSecret(56):
+ Padded clear string: 
+b"8u\xb3,\x8e\xb8~5\xc8B\xff)\xf8\xfb\x92\xf5'E\xc9\xd0-x\x0bL\x86`\xb8\xa5\xac\x0e\xb6jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x06\x06\x06\x06\x06\x06"
+
+2019-03-18 23:15:42,384 DEBUG ecb_chosen_plaintext _findDuplicateBlockPairs(87):
+ Found duplicate block neighbors: b'\x1f\x0cp\x1f\x85\x9c\xa6\x0e\xc4j\xee\x1d\xd6j\x95\t'
+Position after: 64
+2019-03-18 23:15:42,384 INFO ecb_chosen_plaintext ecbChosenPlaintextPrepend(233):
+ Secret portion length (includes padding): 160

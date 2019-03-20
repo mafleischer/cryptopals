@@ -1,7 +1,7 @@
 import binascii
 import os
 import random
-from crypto_algos import misc, aes
+from crypto_algos import misc, aes, logger
 
 
 def setupECBSecretMaker(bstr_key, unittest_secret_portion=None):
@@ -53,6 +53,7 @@ def setupECBSecretMakerPrepend(bstr_key, unittest_secret_portion=None):
         bstr_prefix = os.urandom(random.randint(5, 38))
         bstr_clear = misc.padPKCS7(
             bstr_prefix + bstr_chosen + to_crack, blocksize)
+        logger.debug('Padded clear string: \n{0}\n'.format(bstr_clear))
         # print(bstr_clear)
         # print(chr(bstr_clear[15]))
         #print(chr(aes.aesEncrypt(bstr_clear, bstr_key, 128, mode='ecb', bstr_IV=None)[15]))

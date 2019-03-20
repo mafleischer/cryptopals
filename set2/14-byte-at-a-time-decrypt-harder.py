@@ -15,7 +15,7 @@ key = b'1234567812345678'
 makeSecret = setupECBSecretMakerPrepend(key)
 
 clear = ecb_chosen_plaintext.ecbChosenPlaintextPrepend(makeSecret)
-print(clear)
+#print(clear)
 
 #print(aes.aesEncrypt(b'xxxxxxRollin\' in', key, 128, mode='ecb', bstr_IV=None))
 #print(aes.aesEncrypt(b'xxxxxxRollin\' ic', key, 128, mode='ecb', bstr_IV=None))

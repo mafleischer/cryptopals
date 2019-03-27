@@ -60,7 +60,7 @@ def createPlainBlocks():
 def _findECBCipherBlockJumpLen(secret_fn):
     """
     find the length len of the chosen plaintext string that causes the cipher length in blocks to be increased by one.
-    return len - 1: that is the length of the cipher where no padding was applied
+    return len - 1: that is the length of the chosen plain where no padding was applied
     """
     cipher = secret_fn(b'')
     len_cipher = len(cipher)
@@ -87,7 +87,6 @@ def _findDuplicateBlockPairs(bstr, blocksize):
                 'Found duplicate block neighbors: {0}\nPosition after: {1}'.format(state, after_mark))
             return after_mark
     logger.warning('Found no duplicate blocks.')
-    print('Found no duplicate blocks.')
     return None
 
 
@@ -104,6 +103,46 @@ def _ecbByteOracle(bstr_chosen, secret_fn, byte_offset):
     len_chosen = len(bstr_chosen)
     # if cipher_nocut[len_chosen - 1] == cipher_cut[len_chosen - 1]:
     block_start = len_chosen - 1 - 15
+    block_end = len_chosen - 1
+    # if cipher_nocut[len_chosen - 1] == cipher_cut[len_chosen - 1]:
+    if cipher_nocut[block_start:block_end + 1] == cipher_cut[block_start:block_end + 1]:
+        #    print(chr(cipher_nocut[len_chosen - 1]))
+        #    print(chr(cipher_cut[len_chosen - 1]))
+        return True
+    else:
+        return False
+
+
+def _ecbByteOraclePrepend(bstr_chosen, secret_fn, byte_offset):
+    """
+    check if the chosen plain text portion prepended to bstr_append encrypted is the same as byte_offset bytes cut off at
+    the end of the chosen plain text encrypted (that means num bytes shifted into the chosen plain text area)
+    """
+
+    blocksize = 16
+    while True:
+        cipher_nocut = secret_fn(bstr_chosen)
+        pos = _findDuplicateBlockPairs(cipher_nocut, blocksize)
+        # if we are blockaligned, cut off radom bytes and the marking blocks
+        if pos is not None:
+            cipher_nocut = cipher_nocut[pos:]
+            break
+
+    while True:
+        cipher_cut = secret_fn(bstr_chosen[:-byte_offset])
+        pos = _findDuplicateBlockPairs(cipher_cut, blocksize)
+        # if we are blockaligned, cut off radom bytes and the marking blocks
+        if pos is not None:
+            cipher_cut = cipher_cut[pos:]
+            break
+    # print(bstr_chosen[:-1])
+    # print(cipher_nocut)
+    # print(cipher_cut)
+
+    # w/o marking
+    len_chosen = len(bstr_chosen) - 48
+    # if cipher_nocut[len_chosen - 1] == cipher_cut[len_chosen - 1]:
+    block_start = len_chosen - 16
     block_end = len_chosen - 1
     # if cipher_nocut[len_chosen - 1] == cipher_cut[len_chosen - 1]:
     if cipher_nocut[block_start:block_end + 1] == cipher_cut[block_start:block_end + 1]:
@@ -207,10 +246,9 @@ def ecbChosenPlaintextPrepend(secret_fn):
     blocksize = ecbmisc.discoverBlocksize(secret_fn(b''))
     # length of chosen plain % [blocksize] with which no padding is applied = length of
     # the padding with no chosen plain
-
     logger.info('##### Creating marking blocks #####')
     # make marking blocks, starting with offset 0 blocks
-    bstr_offset0_blocks = b'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    bstr_offset0_blocks = b'XXXXXXXXXXXXXXXXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     bstr_marking_blocks = bstr_offset0_blocks
     for offset in range(1, blocksize):
         bstr_prefix = b'x' * (blocksize - offset)
@@ -222,7 +260,7 @@ def ecbChosenPlaintextPrepend(secret_fn):
     logger.debug('Finished marking blocks:\n{0}'.format(bstr_marking_blocks))
 
     logger.info('##### Find secret portion length #####')
-    # find the secret portion length
+    # find the secret portion length (includes padding)
     while True:
         cipher = secret_fn(bstr_offset0_blocks)
         pos = _findDuplicateBlockPairs(cipher, blocksize)
@@ -230,38 +268,54 @@ def ecbChosenPlaintextPrepend(secret_fn):
             secret_length = len(cipher) - pos
             break
 
-    logger.info('Secret portion length (includes padding): {0}'.format(secret_length))
-
-    """
+    logger.info(
+        'Secret portion length (includes padding): {0}'.format(secret_length))
+    
     # this is one byte short. The test byte will be appended in the loop
-    # below
-    bstr_chosen_plain = bytearray(b'x') * (len_cipher_no_chosen - 1)
+    # below; minus two marking blocks minus 16 byte padding
+    bstr_chosen_plain = bytearray(b'x') * (secret_length - 1 - 16)
     # length of chosen that has length of the secret portion + secret
-    # portion; w/o padding
-    len_chosen = len_cipher_no_chosen
+    # portion;
+    len_cipher_no_chosen = secret_length - 16
+    len_cipher_wo_padding = len_cipher_no_chosen
+    len_chosen = len_cipher_no_chosen - 48
 
     clear = b''
+    # oracle cuts off num_discovered + 1
     num_discovered_bytes = 0
-    while num_discovered_bytes != len_cipher_wo_padding:
+    while num_discovered_bytes != len_chosen:
         for char in chars_to_test:
-            #print("Testing byte {0}".format(chr(char)))
+            # but offset blocks at the beginning
+            # complementary: e.g. if the oracle cuts 15 bytes of a block we need
+            # offset 1 block
+            offsetblock_index_start = num_discovered_bytes % blocksize + 1
+            offsetblock_index_start *= 3 * blocksize
+            offsetblock_index_start *= -1
+            offsetblock_index_end = offsetblock_index_start + 3 * blocksize
+            if offsetblock_index_end == 0:
+                offsetblock_index_end = None
+            current_offset_blocks = bstr_marking_blocks[
+                offsetblock_index_start: offsetblock_index_end]
+            logger.debug('Choosing offset blocks for the chosen plain:\n{0}'.format(
+                current_offset_blocks))
+            #bstr_chosen_plain = bytearray(
+            #    current_offset_blocks) + bstr_chosen_plain
+            bstr_chosen_plain = bytearray(
+                bstr_offset0_blocks) + bstr_chosen_plain
             bstr_chosen_plain += bytes([char])
+            logger.debug('Chosen plain text:\n{0}'.format(bstr_chosen_plain))           
 
-            # if _ecbByteOracle(b'xxxxxxRollin\' ic', secret_fn, 10):
-            # if _ecbByteOracle(bstr_chosen_plain, secret_fn, 10):
-            #print("Test true")
-            # else:
-            #print("Test false")
-            # print(bstr_chosen_plain)
-
-            if _ecbByteOracle(bstr_chosen_plain, secret_fn, num_discovered_bytes + 1):
+            if _ecbByteOraclePrepend(bstr_chosen_plain, secret_fn, num_discovered_bytes + 1):
                 print("Discovered byte {0}".format(chr(char)))
                 clear += bytes([char])
                 num_discovered_bytes += 1
+                # remove marking blocks first
+                del bstr_chosen_plain[0:48]
+                # then one x byte
                 del bstr_chosen_plain[0]
                 break
             else:
+                del bstr_chosen_plain[0:48]
                 del bstr_chosen_plain[-1]
 
     return clear
-    """

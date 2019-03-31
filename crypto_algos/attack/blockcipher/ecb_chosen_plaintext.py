@@ -75,8 +75,50 @@ def _findECBCipherBlockJumpLen(secret_fn):
             add += b'x'
 
 
+def _stripBytesUpToSecret(cipher, blocksize):
+    pos = _findDuplicateBlockPairs(cipher, blocksize)
+    if pos is not None:
+        return cipher[pos:]
+    else:
+        return None
+
+
+def _findECBCipherBlockJumpLenPrepend(secret_fn, blocksize):
+    """
+    find the length len of the chosen plaintext string that causes the cipher length in blocks to be increased by one.
+    return len - 1: that is the length of the chosen plain where no padding was applied; for chal. 14
+    """
+
+    bstr_marking_blocks = b'XXXXXXXXXXXXXXXXXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    while True:
+        cipher = secret_fn(bstr_marking_blocks)
+        new_cipher = _stripBytesUpToSecret(cipher, blocksize)
+        if new_cipher is not None:
+            cipher = new_cipher
+            break
+    # w/o random bytes
+    len_cipher = len(cipher)
+    add = b'x'
+    len_added = len(add)
+    for i in range(15):
+        while True:
+            cipher = secret_fn(bstr_marking_blocks + add)
+            new_cipher = _stripBytesUpToSecret(cipher, blocksize)
+            if new_cipher is not None:
+                cipher = new_cipher
+                break
+
+        len_with_added = len(cipher)
+        if len_cipher < len_with_added:
+            return len_added - 1
+        else:
+            len_added += 1
+            add += b'x'
+
+
 def _findDuplicateBlockPairs(bstr, blocksize):
-    """ Find neighboring identical blocks; Used in harder chosen plain text attack"""
+    """ Find neighboring identical blocks and if found return
+    the index right after them; Used in harder chosen plain text attack"""
     length = len(bstr)
     for i in range(0, length - (2 * blocksize), blocksize):
         state = bstr[i:i + blocksize]
@@ -259,31 +301,34 @@ def ecbChosenPlaintextPrepend(secret_fn):
             bstr_prefix + bstr_offsetx_blocks + bstr_suffix))
     logger.debug('Finished marking blocks:\n{0}'.format(bstr_marking_blocks))
 
+    jump_len = _findECBCipherBlockJumpLenPrepend(secret_fn, blocksize)
+
     logger.info('##### Find secret portion length #####')
     # find the secret portion length (includes padding)
     while True:
         cipher = secret_fn(bstr_offset0_blocks)
         pos = _findDuplicateBlockPairs(cipher, blocksize)
         if pos is not None:
-            secret_length = len(cipher) - pos
+            secret_length = len(cipher) - pos - blocksize
             break
 
     logger.info(
         'Secret portion length (includes padding): {0}'.format(secret_length))
-    
+
     # this is one byte short. The test byte will be appended in the loop
     # below; minus two marking blocks minus 16 byte padding
-    bstr_chosen_plain = bytearray(b'x') * (secret_length - 1 - 16)
+    bstr_chosen_plain = bytearray(b'x') * (secret_length - 1)
     # length of chosen that has length of the secret portion + secret
     # portion;
-    len_cipher_no_chosen = secret_length - 16
+    len_cipher_no_chosen = secret_length
     len_cipher_wo_padding = len_cipher_no_chosen
-    len_chosen = len_cipher_no_chosen - 48
+
+    secret_length -=  jump_len
 
     clear = b''
     # oracle cuts off num_discovered + 1
     num_discovered_bytes = 0
-    while num_discovered_bytes != len_chosen:
+    while num_discovered_bytes != secret_length:
         for char in chars_to_test:
             # but offset blocks at the beginning
             # complementary: e.g. if the oracle cuts 15 bytes of a block we need
@@ -298,12 +343,12 @@ def ecbChosenPlaintextPrepend(secret_fn):
                 offsetblock_index_start: offsetblock_index_end]
             logger.debug('Choosing offset blocks for the chosen plain:\n{0}'.format(
                 current_offset_blocks))
-            #bstr_chosen_plain = bytearray(
+            # bstr_chosen_plain = bytearray(
             #    current_offset_blocks) + bstr_chosen_plain
             bstr_chosen_plain = bytearray(
                 bstr_offset0_blocks) + bstr_chosen_plain
             bstr_chosen_plain += bytes([char])
-            logger.debug('Chosen plain text:\n{0}'.format(bstr_chosen_plain))           
+            logger.debug('Chosen plain text:\n{0}'.format(bstr_chosen_plain))
 
             if _ecbByteOraclePrepend(bstr_chosen_plain, secret_fn, num_discovered_bytes + 1):
                 print("Discovered byte {0}".format(chr(char)))

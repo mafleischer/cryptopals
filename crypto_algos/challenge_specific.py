@@ -1,6 +1,7 @@
 import binascii
 import os
 import random
+import urllib.parse
 from crypto_algos import misc, aes, logger
 
 
@@ -54,14 +55,24 @@ def setupECBSecretMakerPrepend(bstr_key, unittest_secret_portion=None):
         bstr_prefix = os.urandom(random.randint(5, 38))
         bstr_clear = misc.padPKCS7(
             bstr_prefix + bstr_chosen + to_crack, blocksize)
-        logger.debug('Random bytes length: \n{0}\n'.format(len(bstr_prefix)))
-        logger.debug('Padded clear string: \n{0}\n'.format(bstr_clear))
-        logger.debug('Secret length: \n{0}\n'.format(len(to_crack)))
-        logger.debug('Marking + Secret + Padding length: \n{0}\n'.format(len(bstr_clear) - len(bstr_prefix)))
-        logger.debug('Chosen clear length: \n{0}\n'.format(len(bstr_chosen)))
-        # print(bstr_clear)
-        # print(chr(bstr_clear[15]))
-        #print(chr(aes.aesEncrypt(bstr_clear, bstr_key, 128, mode='ecb', bstr_IV=None)[15]))
         return aes.aesEncrypt(bstr_clear, bstr_key, 128, mode='ecb', bstr_IV=None)
+
+    return _ecbAppendMakeSecret
+
+
+def setupCBCSecretMaker(bstr_key, bstr_IV):
+    """
+    challenge 16
+    """
+    bstr_prefix = b'comment1=cooking%20MCs;userdata='
+    bstr_suffix = b';comment2=%20like%20a%20pound%20of%20bacon'
+
+    def _ecbAppendMakeSecret(bstr_chosen):
+        blocksize = 16
+        #bstr_urlencoded_chosen = bytes(urllib.parse.quote_plus(bstr_chosen), 'ascii')
+        bstr_urlencoded_chosen = bstr_chosen
+        bstr_clear = misc.padPKCS7(
+            bstr_prefix + bstr_urlencoded_chosen + bstr_suffix, blocksize)
+        return aes.aesEncrypt(bstr_clear, bstr_key, 128, mode='cbc', bstr_IV=bstr_IV)
 
     return _ecbAppendMakeSecret

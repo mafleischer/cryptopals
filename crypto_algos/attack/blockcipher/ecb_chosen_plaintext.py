@@ -1,4 +1,5 @@
 from crypto_algos.attack.blockcipher import ecbmisc
+from crypto_algos.attack.blockcipher.misc import findCipherBlockJumpLen
 from crypto_algos import logger
 import os
 
@@ -57,24 +58,6 @@ def createPlainBlocks():
                 yield bytes(block)
 
 
-def _findECBCipherBlockJumpLen(secret_fn):
-    """
-    find the length len of the chosen plaintext string that causes the cipher length in blocks to be increased by one.
-    return len - 1: that is the length of the chosen plain where no padding was applied
-    """
-    cipher = secret_fn(b'')
-    len_cipher = len(cipher)
-    add = b'x'
-    len_added = len(add)
-    for i in range(15):
-        len_with_added = len(secret_fn(add))
-        if len_cipher < len_with_added:
-            return len_added - 1
-        else:
-            len_added += 1
-            add += b'x'
-
-
 def _stripBytesUpToSecret(cipher, blocksize):
     pos = _findDuplicateBlockPairs(cipher, blocksize)
     if pos is not None:
@@ -117,7 +100,7 @@ def _findECBCipherBlockJumpLenPrepend(secret_fn, blocksize):
 
 
 def _findDuplicateBlockPairs(bstr, blocksize):
-    """ Find neighboring identical blocks and if found return
+    """ Find neighboring identical blocks (marking blocks in ch. 14) and if found return
     the index right after them; Used in harder chosen plain text attack"""
     length = len(bstr)
     for i in range(0, length - (2 * blocksize), blocksize):
@@ -215,7 +198,7 @@ def ecbChosenPlaintext(secret_fn):
     len_cipher_no_chosen = len(secret_fn(b''))
     # length of chosen plain % [blocksize] with which no padding is applied = length of
     # the padding with no chosen plain
-    len_padding = _findECBCipherBlockJumpLen(secret_fn)
+    len_padding = findCipherBlockJumpLen(secret_fn)
     len_cipher_wo_padding = len_cipher_no_chosen - len_padding
     # this is one byte short. The test byte will be appended in the loop
     # below

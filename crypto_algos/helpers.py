@@ -54,3 +54,10 @@ def xorBytestrings(bstr1, bstr2):
         print("xorBytestrings: strings not of equal len")
         exit(1)
     return bytes([a ^ b for (a, b) in zip(bstr1, bstr2)])
+
+
+def andBytestrings(bstr1, bstr2):
+    if len(bstr1) != len(bstr2):
+        print("xorBytestrings: strings not of equal len")
+        exit(1)
+    return bytes([a & b for (a, b) in zip(bstr1, bstr2)])

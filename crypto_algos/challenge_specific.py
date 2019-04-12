@@ -76,3 +76,27 @@ def setupCBCSecretMaker(bstr_key, bstr_IV):
         return aes.aesEncrypt(bstr_clear, bstr_key, 128, mode='cbc', bstr_IV=bstr_IV)
 
     return _ecbAppendMakeSecret
+
+
+class InvalidPKCS7Error(Exception):
+    """Set 3/Ch. 17"""
+    pass
+
+
+def hasValidPKCS7(bstr, blocksize):
+    """Set 3/Ch. 17;
+    presume bstr is padded; check if it has valid pkcs7 padding """
+    last_byte = bstr[-1]
+    padding = bstr[-last_byte:]
+    if not padding.count(last_byte) == last_byte:
+        raise InvalidPKCS7Error
+    if last_byte == blocksize:
+        return None
+
+    stripped_once = bstr[:-last_byte]
+    last_byte = stripped_once[-1]
+    padding = stripped_once[-last_byte:]
+    if not padding.count(last_byte) == last_byte:
+        raise InvalidPKCS7Error
+    else:
+        return None

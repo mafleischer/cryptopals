@@ -84,8 +84,8 @@ class InvalidPKCS7Error(Exception):
 
 
 def hasValidPKCS7(bstr, blocksize):
-    """Set 3/Ch. 17;
-    presume bstr is padded; check if it has valid pkcs7 padding """
+    """Set 2/Ch.15;
+    check if it has valid pkcs7 padding """
     last_byte = bstr[-1]
     padding = bstr[-last_byte:]
     if not padding.count(last_byte) == last_byte:
@@ -93,10 +93,14 @@ def hasValidPKCS7(bstr, blocksize):
     if last_byte == blocksize:
         return None
 
-    stripped_once = bstr[:-last_byte]
-    last_byte = stripped_once[-1]
-    padding = stripped_once[-last_byte:]
-    if not padding.count(last_byte) == last_byte:
-        raise InvalidPKCS7Error
-    else:
-        return None
+def makeCBCPaddingOracle(key, IV):
+    """Set 3/Ch. 17"""
+    def _cbcPaddingOracle(bstr_cipher):
+        plain = aes.aesDecrypt(bstr_cipher, key, 128, mode='cbc', bstr_IV=IV)
+        try:
+            hasValidPKCS7(plain, 16)
+        except InvalidPKCS7Error:
+            raise
+        else:
+            return None
+    return _cbcPaddingOracle

@@ -438,13 +438,12 @@ def aesCTR(bstr, bstr_key, num_bits, bstr_nonce):
     xored = b''
     counter = 0
     for state in state_iter:
-        bstr_nonce_ctr = bstr_nonce + struct.pack('<d', counter)
+        bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
         secondary_key = aesEncrypt(bstr_nonce_ctr, bstr_key, num_bits)
         xored += xorBytestrings(state, secondary_key)
         counter += 1
     if remainder > 0:
-        counter += 1
-        bstr_nonce_ctr = bstr_nonce + struct.pack('<d', counter)
+        bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
         secondary_key_remainder = aesEncrypt(
             bstr_nonce_ctr, bstr_key, num_bits)[:remainder]
         xored += xorBytestrings(bstr_remainder, secondary_key_remainder)

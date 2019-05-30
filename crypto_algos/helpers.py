@@ -49,15 +49,35 @@ def makeNDArrayFrom(bstr, a, b):
     return array.reshape(a, b)
 
 
-def xorBytestrings(bstr1, bstr2):
+def andBytestrings(bstr1, bstr2):
+    if len(bstr1) != len(bstr2):
+        print("xorBytestrings: strings not of equal len")
+        exit(1)
+    return bytes([a & b for (a, b) in zip(bstr1, bstr2)])
+
+
+def xorBytestrings(bstr1, bstr2, allow_diff_len=False):
+    if allow_diff_len == True:
+        return bytes([a ^ b for (a, b) in zip(bstr1, bstr2)])
     if len(bstr1) != len(bstr2):
         print("xorBytestrings: strings not of equal len")
         exit(1)
     return bytes([a ^ b for (a, b) in zip(bstr1, bstr2)])
 
 
-def andBytestrings(bstr1, bstr2):
-    if len(bstr1) != len(bstr2):
-        print("xorBytestrings: strings not of equal len")
-        exit(1)
-    return bytes([a & b for (a, b) in zip(bstr1, bstr2)])
+def xorStr1AlongStr2(bstr1, bstr2):
+    """
+    Take a shorter byte string X and a longer one Y and xor X with
+    the slices as long as X from every position in Y.
+    X with len(X) bytes from pos. 0 in Y, from pos. 1 and so on.
+    Just print the results.
+    """
+    len_str1 = len(bstr1)
+    times_contained = len(bstr2) // len_str1
+    print('Xor {0} along {1}'.format(bstr1, bstr2))
+    print('#' * 20)
+    for i in range(times_contained):
+        # discovered slice function :)
+        slice_bstr2 = slice(i * len_str1, i * len_str1 + len_str1)
+        xor = xorBytestrings(bstr1, bstr2[slice_bstr2])
+        print('Pos. {0}: {1}'.format(i * len_str1, xor))

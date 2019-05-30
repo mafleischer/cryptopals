@@ -31,7 +31,7 @@ def _modifyForPadding(barray_crafted, secret_state_b4_xor, next_padding):
 
 
 def paddingOracleAttack(bstr_cipher, blocksize, fn_oracle, IV=None):
-    """ Launch oracle attack on fn_oracle"""
+    """ Launch oracle attack with the help of fn_oracle"""
     crafted_block = bytearray(blocksize * b'x')
     len_cipher = len(bstr_cipher)
     state_iter = stateGenerator(bstr_cipher)

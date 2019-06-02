@@ -65,19 +65,27 @@ def xorBytestrings(bstr1, bstr2, allow_diff_len=False):
     return bytes([a ^ b for (a, b) in zip(bstr1, bstr2)])
 
 
+def xorStr1Str2AtPos(bstr1, bstr2, pos):
+    # discovered slice function :)
+    slice_bstr2 = slice(pos, pos + len(bstr1))
+    if not bstr2[slice_bstr2]:
+        return None
+    return xorBytestrings(bstr1, bstr2[slice_bstr2], allow_diff_len=True)
+
+
 def xorStr1AlongStr2(bstr1, bstr2):
     """
     Take a shorter byte string X and a longer one Y and xor X with
     the slices as long as X from every position in Y.
     X with len(X) bytes from pos. 0 in Y, from pos. 1 and so on.
-    Just print the results.
+    
+    Return dict of indexes and corresponding xor result
     """
     len_str1 = len(bstr1)
-    times_contained = len(bstr2) // len_str1
-    print('Xor {0} along {1}'.format(bstr1, bstr2))
-    print('#' * 20)
-    for i in range(times_contained):
-        # discovered slice function :)
-        slice_bstr2 = slice(i * len_str1, i * len_str1 + len_str1)
-        xor = xorBytestrings(bstr1, bstr2[slice_bstr2])
-        print('Pos. {0}: {1}'.format(i * len_str1, xor))
+    # + 0.4 gives math.ceil
+    times_to_xor = round( (len(bstr2) / len_str1) + 0.4)
+    dict_pos_xor = dict()
+    for i in range(times_to_xor):
+        xor = xorStr1Str2AtPos(bstr1, bstr2, i * len_str1)
+        dict_pos_xor[i * len_str1] = xor
+    return dict_pos_xor

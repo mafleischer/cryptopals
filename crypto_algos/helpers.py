@@ -85,7 +85,7 @@ def xorStr1AlongStr2(bstr1, bstr2):
     # + 0.4 gives math.ceil
     times_to_xor = round( (len(bstr2) / len_str1) + 0.4)
     dict_pos_xor = dict()
-    for i in range(times_to_xor):
-        xor = xorStr1Str2AtPos(bstr1, bstr2, i * len_str1)
-        dict_pos_xor[i * len_str1] = xor
+    for i in range(len(bstr2)):
+        xor = xorStr1Str2AtPos(bstr1, bstr2, i)
+        dict_pos_xor[i] = xor
     return dict_pos_xor

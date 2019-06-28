@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-import aes
-import helpers
-import misc
+from crypto_algos import aes
+from crypto_algos import helpers
+from crypto_algos import misc
 from crypto_algos import challenge_specific
 from crypto_algos.attack.blockcipher import ecb_chosen_plaintext
 

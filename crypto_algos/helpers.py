@@ -60,7 +60,7 @@ def andBytestrings(bstr1, bstr2):
     return bytes([a & b for (a, b) in zip(bstr1, bstr2)])
 
 
-def xorBytestrings(bstr1: bytes, bstr2: bytes, allow_diff_len: bool = False) -> bytes:
+def xorBytestrings(bstr1: bytes, bstr2: bytes, allow_diff_len: bool = False) -> object:
     if allow_diff_len == True:
         return bytes([a ^ b for (a, b) in zip(bstr1, bstr2)])
     if len(bstr1) != len(bstr2):

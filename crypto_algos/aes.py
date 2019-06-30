@@ -425,29 +425,16 @@ if __name__ == '__main__':
 
 def aesCTR(bstr, bstr_key, num_bits, bstr_nonce):
     """ encryption and decryption is the same in this mode
-    TODO: change call to stateGenerator
     """
-    remainder = len(bstr) % 16
-    if remainder > 1:
-        bstr_cut = bstr[:-remainder]
-        bstr_remainder = bstr[-remainder:]
-    if remainder == 0:
-        bstr_cut = bstr
-    if remainder == 1:
-        bstr_cut = bstr[:-1]
-        bstr_remainder = bytes([bstr[-1]])
-    state_iter = stateGenerator(bstr_cut)
+    state_iter = stateGenerator(bstr, 16, modis0=False)
     xored = b''
     counter = 0
     for state in state_iter:
         bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
         secondary_key = aesEncrypt(bstr_nonce_ctr, bstr_key, num_bits)
+        # this will be shorter than state len if the last state is remainder:
+        secondary_key = secondary_key[:len(state)]
         xored += xorBytestrings(state, secondary_key)
         counter += 1
-    if remainder > 0:
-        bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
-        secondary_key_remainder = aesEncrypt(
-            bstr_nonce_ctr, bstr_key, num_bits)[:remainder]
-        xored += xorBytestrings(bstr_remainder, secondary_key_remainder)
 
     return xored

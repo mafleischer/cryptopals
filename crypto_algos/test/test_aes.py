@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+import base64
 from crypto_algos import aes
 
 
@@ -117,6 +118,13 @@ class TestAESDecrypt(unittest.TestCase):
         clear = aes.aesDecrypt(cipher, key, 128, mode='cbc', bstr_IV=IV)
         self.assertEqual(clear, clear_expected)
 
+class TestAESCTR(unittest.TestCase):
+    def testAESCTREncrypt(self):
+        cipher = base64.b64decode('L77na/nrFsKvynd6HzOoG7GHTLXsTVu9qvY/2syLXzhPweyyMTJULu/6/kXX0KSvoOLSFQ==')
+        key = b'YELLOW SUBMARINE'
+        nonce = bytes(8)
+        clear = aes.aesCTR(cipher, key, 128, nonce)
+        self.assertEqual(b"Yo, VIP Let's kick it Ice, Ice, baby Ice, Ice, baby ", clear)
 
 if __name__ == '__main__':
     unittest.main()

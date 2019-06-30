@@ -1,38 +1,6 @@
 import unittest
 import numpy as np
 from crypto_algos import aes
-from crypto_algos import helpers
-from crypto_algos import misc
-from crypto_algos import challenge_specific
-from crypto_algos.attack.blockcipher import ecb_chosen_plaintext
-
-
-class TestHelpers(unittest.TestCase):
-
-    def testStateGenerator(self):
-        bytenum = 16
-        bstr_msg = b'1234123412341234abcdabcdabcdabcd'
-        stategen = helpers.stateGenerator(bstr_msg)
-        count = 0
-        states = []
-        for s in stategen:
-            states.append(s)
-        self.assertEqual(len(states), len(bstr_msg) / bytenum)
-        self.assertEqual(states[0], b'1234123412341234')
-        self.assertEqual(states[1], b'abcdabcdabcdabcd')
-
-    def testXorBytestrings(self):
-        bstr1 = b'\x01\x01\x01\x01\x01\x01\x01\x01'
-        bstr2 = b'\x00\x00\x00\x00\x00\x00\x00\x00'
-        result = helpers.xorBytestrings(bstr1, bstr2)
-        self.assertEqual(result, b'\x01\x01\x01\x01\x01\x01\x01\x01')
-
-    def testRotateList(self):
-        l = [1, 2, 3, 4]
-        ll = helpers.rotateList(l, 2, 'l')
-        lr = helpers.rotateList(l, 3, 'r')
-        self.assertEqual(ll, [3, 4, 1, 2])
-        self.assertEqual(lr, [2, 3, 4, 1])
 
 
 class TestAESEncrypt(unittest.TestCase):
@@ -149,37 +117,6 @@ class TestAESDecrypt(unittest.TestCase):
         clear = aes.aesDecrypt(cipher, key, 128, mode='cbc', bstr_IV=IV)
         self.assertEqual(clear, clear_expected)
 
-
-class TestBlockCipherAttack(unittest.TestCase):
-    # def testECBChosenPlaintext(self):
-    #    blockcipher.ecbChosenPlaintext()
-
-    def testECBByteOracle(self):
-        key = b'1234567812345678'
-        # secretmaker uses padding
-        secret_fn = challenge_specific.setupECBSecretMaker(
-            key, unittest_secret_portion=b'XYZ')
-        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(
-            b'AAAAAAAAAAAAAAXY', secret_fn, 2), True)
-        secret_fn = challenge_specific.setupECBSecretMaker(
-            key, unittest_secret_portion=b'Rollin\' in')
-        self.assertEqual(ecb_chosen_plaintext._ecbByteOracle(
-            b'xxxxxxRollin\' in', secret_fn, 10), True)
-
-
-class TestMisc(unittest.TestCase):
-
-    def testPadPKCS7(self):
-        txt = b'12345678123456'
-        expected_padded = b'12345678123456\x02\x02'
-        padded = misc.padPKCS7(txt, 16)
-        self.assertEqual(padded, expected_padded)
-
-    def testUnpadPKCS7(self):
-        txt = b'12345678123456\x02\x02'
-        expected_unpadded = b'12345678123456'
-        unpadded = misc.unpadPKCS7(txt, 16)
-        self.assertEqual(unpadded, expected_unpadded)
 
 if __name__ == '__main__':
     unittest.main()

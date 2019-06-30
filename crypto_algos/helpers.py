@@ -23,7 +23,7 @@ def rotateList(l, num, direction):
         return list(l[-num:]) + list(l[0:-num])
 
 
-def stateGenerator(bstr_msg):
+def stateGenerator(bstr_msg: bytes) -> bytes:
     """
     takes the whole length of the message as a byte
     string and returns blocks of it as byte string
@@ -49,15 +49,43 @@ def makeNDArrayFrom(bstr, a, b):
     return array.reshape(a, b)
 
 
-def xorBytestrings(bstr1, bstr2):
+def andBytestrings(bstr1, bstr2):
+    if len(bstr1) != len(bstr2):
+        print("xorBytestrings: strings not of equal len")
+        exit(1)
+    return bytes([a & b for (a, b) in zip(bstr1, bstr2)])
+
+
+def xorBytestrings(bstr1: bytes, bstr2: bytes, allow_diff_len: bool =False) -> bytes:
+    if allow_diff_len == True:
+        return bytes([a ^ b for (a, b) in zip(bstr1, bstr2)])
     if len(bstr1) != len(bstr2):
         print("xorBytestrings: strings not of equal len")
         exit(1)
     return bytes([a ^ b for (a, b) in zip(bstr1, bstr2)])
 
 
-def andBytestrings(bstr1, bstr2):
-    if len(bstr1) != len(bstr2):
-        print("xorBytestrings: strings not of equal len")
-        exit(1)
-    return bytes([a & b for (a, b) in zip(bstr1, bstr2)])
+def xorStr1Str2AtPos(bstr1, bstr2, pos):
+    # discovered slice function :)
+    slice_bstr2 = slice(pos, pos + len(bstr1))
+    if not bstr2[slice_bstr2]:
+        return None
+    return xorBytestrings(bstr1, bstr2[slice_bstr2], allow_diff_len=True)
+
+
+def xorStr1AlongStr2(bstr1, bstr2):
+    """
+    Take a shorter byte string X and a longer one Y and xor X with
+    the slices as long as X from every position in Y.
+    X with len(X) bytes from pos. 0 in Y, from pos. 1 and so on.
+    
+    Return dict of indexes and corresponding xor result
+    """
+    len_str1 = len(bstr1)
+    # + 0.4 gives math.ceil
+    times_to_xor = round( (len(bstr2) / len_str1) + 0.4)
+    dict_pos_xor = dict()
+    for i in range(len(bstr2)):
+        xor = xorStr1Str2AtPos(bstr1, bstr2, i)
+        dict_pos_xor[i] = xor
+    return dict_pos_xor

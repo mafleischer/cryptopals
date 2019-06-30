@@ -1,7 +1,9 @@
 import struct
+import collections
+from crypto_algos.helpers import xorBytestrings
 
-english_letters = (,)
-english_bigrams = (,)
+english_letters = ()
+english_bigrams = ()
 
 
 def hammingDistance(bstr1: bytes, bstr2: bytes) -> int:
@@ -18,21 +20,25 @@ def hammingDistance(bstr1: bytes, bstr2: bytes) -> int:
     diff = b''
     b1 = bstr1
     b2 = bstr2
-    diff = xor(b1, b2)
+    diff = xorBytestrings(b1, b2)
     distance = 0
     for b in diff:
         distance += bin(b).count("1")
     return(distance)
 
 
-def bytesFrequency(bstr: bytes, len: int) -> dict:
+def bytesFrequency(bstr: bytes, length: int) -> dict:
     """
     Count the occurences of each distinct group of bytes of length len in bstr
 
     :param bstr: byte string
-    :return: a dictionary mapping bytes to their frequency in bstr (key is frequency)
+    :return: dict mapping bytes to their frequency in bstr
     """
-    pass
+    if length < 0:
+        
+
+    #tupels = collections.Counter(bstr).most_common(len(bstr))
+    #return {b: f for (b, f) in tupels}
 
 
 def mapFreqsToLang(dict_bytes_to_freqs: dict, language_tuple: tuple) -> dict:

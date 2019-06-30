@@ -1,5 +1,6 @@
 import struct
 import collections
+from crypto_algos.exceptions import ParamValueError, ParamClashError
 from crypto_algos.helpers import xorBytestrings
 
 english_letters = ()
@@ -35,7 +36,9 @@ def bytesFrequency(bstr: bytes, length: int) -> dict:
     :return: dict mapping bytes to their frequency in bstr
     """
     if length < 0:
-        
+        raise ParamValueError
+    if length > len(bstr):
+        raise ParamClashError
 
     #tupels = collections.Counter(bstr).most_common(len(bstr))
     #return {b: f for (b, f) in tupels}

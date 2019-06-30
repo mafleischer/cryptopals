@@ -178,7 +178,7 @@ def aesEncrypt(bstr_msg, bstr_key, num_bits, mode='ecb', bstr_IV=None):
 
     # without padding for now
     #bstr_msg = misc.padPKCS7(bstr_msg, 16)
-    state_iter = stateGenerator(bstr_msg)
+    state_iter = stateGenerator(bstr_msg, 16)
     rounds = {128: 10, 192: 12, 256: 14}
     round_keys = aesKeyExpansion(bstr_key)
     cipher = b''
@@ -340,7 +340,7 @@ def aesDecrypt(bstr_cipher, bstr_key, num_bits, mode='ecb', bstr_IV=None):
         print("Unsuitable key length!")
         exit(1)
 
-    state_iter = stateGenerator(bstr_cipher)
+    state_iter = stateGenerator(bstr_cipher, 16)
     rounds = {128: 10, 192: 12, 256: 14}
     round_keys = aesKeyExpansion(bstr_key)
     cipher = b''
@@ -424,7 +424,9 @@ if __name__ == '__main__':
 
 
 def aesCTR(bstr, bstr_key, num_bits, bstr_nonce):
-    """ encryption and decryption is the same in this mode """
+    """ encryption and decryption is the same in this mode
+    TODO: change call to stateGenerator
+    """
     remainder = len(bstr) % 16
     if remainder > 1:
         bstr_cut = bstr[:-remainder]

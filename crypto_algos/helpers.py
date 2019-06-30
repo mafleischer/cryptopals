@@ -1,4 +1,5 @@
 import numpy as np
+from crypto_algos.exceptions import ParamClashError, ParamValueError
 
 def check_chunk(bstr):
     # check state len
@@ -23,19 +24,22 @@ def rotateList(l, num, direction):
         return list(l[-num:]) + list(l[0:-num])
 
 
-def stateGenerator(bstr_msg: bytes) -> bytes:
+def stateGenerator(bstr_msg: bytes, length: int, modis0: bool = True) -> bytes:
     """
     takes the whole length of the message as a byte
     string and returns blocks of it as byte string
-    TODO: make block length variable
     """
-    if len(bstr_msg) % 16 != 0:
-        print("stateGenerator: msg len % 16 != 0")
-        exit(1)
+    if modis0 is True and len(bstr_msg) % length != 0:
+        # in this case it is not desired to have a remainder of bytes
+        raise ParamClashError
+    if len(bstr_msg) < length:
+        raise ParamClashError
+    if length < 0:
+        raise ParamValueError
     restmsg = bstr_msg
-    while len(restmsg) > 0:
-        state = restmsg[:16]
-        restmsg = restmsg[16:]
+    while restmsg:
+        state = restmsg[:length]
+        restmsg = restmsg[length:]
         yield state
 
 
@@ -56,7 +60,7 @@ def andBytestrings(bstr1, bstr2):
     return bytes([a & b for (a, b) in zip(bstr1, bstr2)])
 
 
-def xorBytestrings(bstr1: bytes, bstr2: bytes, allow_diff_len: bool =False) -> bytes:
+def xorBytestrings(bstr1: bytes, bstr2: bytes, allow_diff_len: bool = False) -> bytes:
     if allow_diff_len == True:
         return bytes([a ^ b for (a, b) in zip(bstr1, bstr2)])
     if len(bstr1) != len(bstr2):
@@ -83,7 +87,7 @@ def xorStr1AlongStr2(bstr1, bstr2):
     """
     len_str1 = len(bstr1)
     # + 0.4 gives math.ceil
-    times_to_xor = round( (len(bstr2) / len_str1) + 0.4)
+    times_to_xor = round((len(bstr2) / len_str1) + 0.4)
     dict_pos_xor = dict()
     for i in range(len(bstr2)):
         xor = xorStr1Str2AtPos(bstr1, bstr2, i)

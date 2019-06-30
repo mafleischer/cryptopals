@@ -7,7 +7,7 @@ class TestHelpers(unittest.TestCase):
     def testStateGenerator(self):
         bytenum = 16
         bstr_msg = b'1234123412341234abcdabcdabcdabcd'
-        stategen = helpers.stateGenerator(bstr_msg)
+        stategen = helpers.stateGenerator(bstr_msg, 16)
         count = 0
         states = []
         for s in stategen:

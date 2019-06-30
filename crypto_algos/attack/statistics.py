@@ -1,7 +1,7 @@
 import struct
 import collections
 from crypto_algos.exceptions import ParamValueError, ParamClashError
-from crypto_algos.helpers import xorBytestrings
+from crypto_algos.helpers import xorBytestrings, stateGenerator
 
 english_letters = ()
 english_bigrams = ()
@@ -39,9 +39,11 @@ def bytesFrequency(bstr: bytes, length: int) -> dict:
         raise ParamValueError
     if length > len(bstr):
         raise ParamClashError
-
-    #tupels = collections.Counter(bstr).most_common(len(bstr))
-    #return {b: f for (b, f) in tupels}
+    state_iter = stateGenerator(bstr, length, modis0=False)
+    groups = [bytes(state) for state in state_iter]
+    num_groups = len(bstr) // length
+    tupels = collections.Counter(groups).most_common(num_groups)
+    return {b: f for (b, f) in tupels}
 
 
 def mapFreqsToLang(dict_bytes_to_freqs: dict, language_tuple: tuple) -> dict:

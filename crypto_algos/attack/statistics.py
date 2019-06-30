@@ -40,8 +40,11 @@ def bytesFrequency(bstr: bytes, length: int) -> dict:
     if length > len(bstr):
         raise ParamClashError
     state_iter = stateGenerator(bstr, length, modis0=False)
-    groups = [bytes(state) for state in state_iter]
+    groups = tuple(bytes(state) for state in state_iter)
     num_groups = len(bstr) // length
+    # throw away remainder
+    if len(groups) > num_groups:
+        groups = groups[:-1]
     tupels = collections.Counter(groups).most_common(num_groups)
     return {b: f for (b, f) in tupels}
 

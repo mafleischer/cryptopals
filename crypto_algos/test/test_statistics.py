@@ -11,6 +11,8 @@ class TestStatistics(unittest.TestCase):
     def testBytesFrequency(self):
         d = bytesFrequency(b'AAAABBB', 1)
         self.assertDictEqual(d, {b'A': 4, b'B': 3})
+        d = bytesFrequency(b'AAAABBB', 2)
+        self.assertDictEqual(d, {b'AA': 2, b'BB': 1})
 
 
 if __name__ == '__main__':

@@ -53,6 +53,28 @@ def makeNDArrayFrom(bstr, a, b):
     return array.reshape(a, b)
 
 
+def substituteBytes(bstr: bytes, current: tuple, substitutes: tuple) -> bytes:
+    """
+    In bstr replace all occurences of the byte groups in tuple current with the
+    bytes in tuple substitutes, at the same index respectively
+
+    :param bstr: byte string
+    :param current: bytes to substitute
+    :param substitutes: bytes to substitute for
+    :return: bstr modified
+    """
+    new = bytearray(bstr)
+    group_len = len(current[0])
+    for i in range(len(bstr)):
+        sl = slice(i, i+group_len)
+        group = bstr[sl]
+        if group in current:
+            index = current.index(group)
+            substitute = substitutes[index]
+            new[sl] = substitute
+    return bytes(new)
+
+
 def andBytestrings(bstr1, bstr2):
     if len(bstr1) != len(bstr2):
         print("xorBytestrings: strings not of equal len")

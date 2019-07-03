@@ -30,6 +30,13 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(ll, [3, 4, 1, 2])
         self.assertEqual(lr, [2, 3, 4, 1])
 
+    def testSubstituteBytes(self):
+        bstr = b'XXXYYYZZZ'
+        cur = (b'XXX', b'YYY')
+        sub = (b'xxx', b'yyy')
+        new = helpers.substituteBytes(bstr, cur, sub)
+        self.assertEqual(new, b'xxxyyyZZZ')
+
 
 if __name__ == '__main__':
     unittest.main()

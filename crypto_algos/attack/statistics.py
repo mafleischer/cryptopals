@@ -47,12 +47,22 @@ def bytesFrequency(bstr: bytes, length: int) -> tuple:
     return tuple(b for (b, _) in tupels)
 
 
-def getNgramsFromFile(ngram_name: str) -> tuple:
-    fname = ngram_name + '.txt'
+def getNgramsFromFile(length: int) -> tuple:
+    """
+    Read Ngrams (monograms, bigrams etc. So far only mono and bigrams)
+    from file, frequency in descending order.
+    :param length: length, translates to file name
+    :return: tuple containg Ngrams
+    """
+    if length == 1:
+        fname = 'english_monograms.txt'
+    if length == 2:
+        fname = 'english_bigrams.txt'
+
     with open(RESOURCES_DIR_NAME + fname) as f:
         lines = f.readlines()
     ngrams = tuple(line.split(' ')[0].encode('ascii') for line in lines)
-    if ngram_name == 'english_monograms':
+    if length == 1:
         # space is the most frequent monogram actually, duh
         ngrams = (b' ',) + ngrams
     return ngrams

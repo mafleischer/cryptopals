@@ -18,9 +18,9 @@ class TestStatistics(unittest.TestCase):
         self.assertEqual(d, (b'AA', b'BB'))
 
     def testGetNgramsFromFile(self):
-        mono = getNgramsFromFile('english_monograms')
+        mono = getNgramsFromFile(1)
         self.assertEqual(mono[0:6], (b' ', b'E',b'T',b'A',b'O',b'I'))
-        bi = getNgramsFromFile('english_bigrams')
+        bi = getNgramsFromFile(2)
         self.assertEqual(bi[0:5], (b'TH',b'HE',b'IN',b'ER',b'AN'))
 
     def testMapFreqBytes2FreqLang(self):

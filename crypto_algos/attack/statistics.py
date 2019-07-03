@@ -47,7 +47,7 @@ def bytesFrequency(bstr: bytes, length: int) -> tuple:
     return tuple(b for (b, _) in tupels)
 
 
-def getNgramsFromFile(length: int) -> tuple:
+def getNgramsFromFile(length: int, lang: str) -> tuple:
     """
     Read Ngrams (monograms, bigrams etc. So far only mono and bigrams)
     from file, frequency in descending order.
@@ -55,9 +55,9 @@ def getNgramsFromFile(length: int) -> tuple:
     :return: tuple containg Ngrams
     """
     if length == 1:
-        fname = 'english_monograms.txt'
+        fname = lang + '_monograms.txt'
     if length == 2:
-        fname = 'english_bigrams.txt'
+        fname = lang + '_bigrams.txt'
 
     with open(RESOURCES_DIR_NAME + fname) as f:
         lines = f.readlines()

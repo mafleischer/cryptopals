@@ -1,4 +1,5 @@
 import logging
+import os
 from logging.handlers import RotatingFileHandler
 
 log_formatter = logging.Formatter(
@@ -14,3 +15,5 @@ logger = logging.getLogger('root')
 logger.setLevel(logging.DEBUG)
 
 logger.addHandler(handler)
+
+RESOURCES_DIR_NAME = os.path.dirname(os.path.abspath(__file__)) + '/resources/'

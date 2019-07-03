@@ -1,10 +1,8 @@
 import struct
 import collections
+from crypto_algos import RESOURCES_DIR_NAME
 from crypto_algos.exceptions import ParamValueError, ParamClashError
 from crypto_algos.helpers import xorBytestrings, stateGenerator
-
-english_letters = ()
-english_bigrams = ()
 
 
 def hammingDistance(bstr1: bytes, bstr2: bytes) -> int:
@@ -28,7 +26,7 @@ def hammingDistance(bstr1: bytes, bstr2: bytes) -> int:
     return(distance)
 
 
-def bytesFrequency(bstr: bytes, length: int) -> dict:
+def bytesFrequency(bstr: bytes, length: int) -> tuple:
     """
     Count the occurences of each distinct group of bytes of length len in bstr
 
@@ -42,24 +40,38 @@ def bytesFrequency(bstr: bytes, length: int) -> dict:
     state_iter = stateGenerator(bstr, length, modis0=False)
     groups = tuple(bytes(state) for state in state_iter)
     num_groups = len(bstr) // length
-    # throw away remainder
+    # throw away remainder since it doesn't have length <length>
     if len(groups) > num_groups:
         groups = groups[:-1]
     tupels = collections.Counter(groups).most_common(num_groups)
-    return {b: f for (b, f) in tupels}
+    return tuple(b for (b, _) in tupels)
 
 
-def mapFreqsToLang(dict_bytes_to_freqs: dict, language_tuple: tuple) -> dict:
+def getNgramsFromFile(ngram_name: str) -> tuple:
+    fname = ngram_name + '.txt'
+    with open(RESOURCES_DIR_NAME + fname) as f:
+        lines = f.readlines()
+    ngrams = tuple(line.split(' ')[0].encode('ascii') for line in lines)
+    if ngram_name == 'english_monograms':
+        # space is the most frequent monogram actually, duh
+        ngrams = (b' ',) + ngrams
+    return ngrams
+
+
+def mapFreqBytes2FreqLang(freq_bytes: tuple, language_tuple: tuple, top_n: int = None) -> dict:
     """
-    Map dictionary (obtained from bytesFrequency) items, i.e. the bytes obtained from
+    Map tuple (obtained from bytesFrequency), i.e. the bytes obtained from
     a byte string, to bytes in the language tuple that have the same frequency in that language.
-    The frequency is the key in the dict and the index position in the tuple.
+    The frequency corresponds to the index position in the tuples.
 
-    :param dict_bytes_to_freqs: dict mapping {<occurence in bytestr>: b'foo'}
+    :param freq_bytes: dict mapping {<occurrence in bytestr>: b'foo'}
     :param language_tuple: a tuple with characters, bigrams or trigrams etc.
-    They have the same length as the value bytes in the dict.
+    They have the same length as the bytes in the first tuple.
     Index of a char or group of bytes corresponds to its frequency in the
     language
+    ::
     :return: dict mapping {b'foo': b'bar'}
     """
-    pass
+    if top_n is None:
+        return dict(zip(freq_bytes, language_tuple))
+    return dict(zip(freq_bytes[:top_n], language_tuple))

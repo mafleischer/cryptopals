@@ -2,7 +2,7 @@ import struct
 import collections
 from crypto_algos import RESOURCES_DIR_NAME
 from crypto_algos.exceptions import ParamValueError, ParamClashError
-from crypto_algos.helpers import xorBytestrings, stateGenerator
+from crypto_algos.helpers import xorBytestrings, stateGenerator, substituteBytes
 
 
 def hammingDistance(bstr1: bytes, bstr2: bytes) -> int:
@@ -23,7 +23,7 @@ def hammingDistance(bstr1: bytes, bstr2: bytes) -> int:
     distance = 0
     for b in diff:
         distance += bin(b).count("1")
-    return(distance)
+    return (distance)
 
 
 def bytesFrequency(bstr: bytes, length: int) -> tuple:
@@ -70,6 +70,7 @@ def getNgramsFromFile(length: int, lang: str) -> tuple:
 
 def mapFreqBytes2FreqLang(freq_bytes: tuple, language_tuple: tuple, top_n: int = None) -> dict:
     """
+    NOT USED CURRENTLY!
     Map tuple (obtained from bytesFrequency), i.e. the bytes obtained from
     a byte string, to bytes in the language tuple that have the same frequency in that language.
     The frequency corresponds to the index position in the tuples.
@@ -85,3 +86,24 @@ def mapFreqBytes2FreqLang(freq_bytes: tuple, language_tuple: tuple, top_n: int =
     if top_n is None:
         return dict(zip(freq_bytes, language_tuple))
     return dict(zip(freq_bytes[:top_n], language_tuple))
+
+
+def substituteLangNgramsIn(bstr: bytes, lang: str, length: int, top_n: int = None) -> bytes:
+    """
+    Actual language frequency workhorse. Substitute byte groups of length length
+    in bstr according to the frequency of mono or bigrams etc. of language lang
+    TODO: write case for words as ngrams
+
+    :param bstr: byte string
+    :param lang: language abbreviated (en = english, etc.)
+    :param length: int, 1 = monograms etc.
+    :param top_n: only substitute for n most frequent ngrams. If none substitute as many as
+    possible
+    :return: byte string
+    """
+    current_bytes = bytesFrequency(bstr, length)
+    ngrams = getNgramsFromFile(length, lang)
+    if not top_n:
+        current_bytes = current_bytes[:top_n]
+        ngrams = ngrams[:top_n]
+    return substituteBytes(bstr, current_bytes, ngrams)

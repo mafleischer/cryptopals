@@ -1,7 +1,7 @@
 import unittest
 
 from crypto_algos.attack.statistics import hammingDistance, bytesFrequency, getNgramsFromFile,\
-    mapFreqBytes2FreqLang
+    mapFreqBytes2FreqLang, substituteLangNgramsIn
 
 
 class TestStatistics(unittest.TestCase):
@@ -27,7 +27,12 @@ class TestStatistics(unittest.TestCase):
         from_text = (b'a', b'b', b'c')
         lang = (b'1', b'2', b'3')
         d = mapFreqBytes2FreqLang(from_text, lang)
-        self.assertDictEqual(d, {b'a': b'1', b'b': b'2', b'c': b'3'})
+        self.assertDictEqual({b'a': b'1', b'b': b'2', b'c': b'3'}, d)
+
+    def testsubstituteLangNgramsIn(self):
+        bstr = b'XXXXYYYZZ'
+        new = substituteLangNgramsIn(bstr, 'en', 1, 3)
+        self.assertEqual(b'    EEETT', new)
 
 if __name__ == '__main__':
     unittest.main()

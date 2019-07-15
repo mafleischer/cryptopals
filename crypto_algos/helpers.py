@@ -45,8 +45,7 @@ def stateGenerator(bstr_msg: bytes, length: int, modis0: bool = True) -> bytes:
 
 def makeNDArrayFrom(bstr, a, b):
     """
-    takes a byte string and returns it as a numpy ndarray, a as rows, b as columns. 4x4 for the moment
-    TODO: make length variable
+    takes a byte string and returns it as a numpy ndarray, a as rows, b as columns.
     """
     array = np.frombuffer(bstr, dtype=np.uint8)
     array.flags.writeable = True

@@ -2,7 +2,7 @@
 
 import npyscreen
 import topmenu
-from manytimepadform import ManyTimePadForm
+from ui.manytimepadform import ManyTimePadForm
 
 class UIApp(npyscreen.NPSAppManaged):
 

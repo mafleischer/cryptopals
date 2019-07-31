@@ -2,27 +2,26 @@
 
 import npyscreen
 
-class Editor(npyscreen.MultiLineEditable):
+class Editor(npyscreen.MultiLineEditableBoxed):
     pass
 
 class ManyTimePadForm(npyscreen.FormWithMenus):
     def create(self):
         self.how_exited_handers[npyscreen.wgwidget.EXITED_ESCAPE] = self.exit_application
 
-        self.byte_editor = self.add(Editor)
+        self.byte_editor = self.add(Editor, max_height=15)
         lines = strs.split('\n')
         self.byte_editor.values = lines
+
+        self.key_display = self.add(npyscreen.MultiLineEditableBoxed, max_height=4)
+        self.key_display.values = ['blabla']
 
         self.menu_main = self.add_menu(name="Main Menu", shortcut="^M")
 
         self.menu_run_challenge = self.menu_main.addNewSubmenu("Choose Challenge Script", "^R")
-        self.menu_run_challenge.addItemsFromList([
-            ("Just dummy right now", self.dummy),
-        ])
+        self.menu_run_challenge.addItem(text="Just dummy right now", onSelect=self.dummy)
 
-        self.menu_main.addItemsFromList([
-            ("Exit", self.exit_application, "^E"),
-        ])
+        self.menu_main.addItem(text="Exit", onSelect=self.exit_application, shortcut="^E")
 
     def dummy(self):
         npyscreen.notify_confirm('Just dummy right now')

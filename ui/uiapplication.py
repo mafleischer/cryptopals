@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-import npyscreen
+import npyscreen as nps
 import topmenu
 from ui.manytimepadform import ManyTimePadForm
 
-class UIApp(npyscreen.NPSAppManaged):
+class UIApp(nps.NPSAppManaged):
 
     def __init__(self, form):
         super().__init__()

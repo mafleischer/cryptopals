@@ -1,35 +1,79 @@
 #!/usr/bin/python3
 
-import npyscreen
+import npyscreen as nps
 
-class Editor(npyscreen.MultiLineEditableBoxed):
+class Editor(nps.MultiLineEditableBoxed):
     pass
 
-class ManyTimePadForm(npyscreen.FormWithMenus):
+class CollapseCheckBox(nps.FormControlCheckbox):
+
+    def addForm(self, form_obj):
+        """
+        For resizing its widgets
+        :param form_obj: parent form
+        :return:
+        """
+        self.parentForm = form_obj
+
+    def addWidgetsToResize(self, *widgets):
+        self.widgets_to_resize = [ wg for wg in widgets ]
+
+    def whenToggled(self):
+        for wg in self.widgets_to_resize:
+            wg.max_width = 80
+            wg.update()
+        self.parentForm.display()
+
+class ManyTimePadForm(nps.FormWithMenus):
+
     def create(self):
-        self.how_exited_handers[npyscreen.wgwidget.EXITED_ESCAPE] = self.exit_application
+        self.how_exited_handers[nps.wgwidget.EXITED_ESCAPE] = self.exit_application
 
-        self.byte_editor = self.add(Editor, max_height=15)
-        lines = strs.split('\n')
-        self.byte_editor.values = lines
+        self.collapse_chbox = self.add(CollapseCheckBox, name='Collapse Menus',\
+                                       max_height=1, relx=-60)
+        self.nextrely += 2
+        self.file_selector = self.add(nps.TitleFilenameCombo, name='File containing '
+                                                                   'the hex encoded'
+                                                                   'many times encoded ',
+                                      max_height=4, relx=-60)
+        self.file_selector.must_exist = true
 
-        self.key_display = self.add(npyscreen.MultiLineEditableBoxed, max_height=4)
+        self.nextrely += 1
+        self.lang_chbox = self.add(nps.TitleSelectOne, name='Frequency analysis in language...',
+                                   relx=-60, max_height=3)
+        self.lang_chbox.values = ['en']
+
+        self.collapse_chbox.addInvisibleWhenSelected(self.file_selector)
+        self.collapse_chbox.addInvisibleWhenSelected(self.lang_chbox)
+        self.collapse_chbox.addForm(self)
+        self.collapse_chbox.addWidgetsToResize(self.file_selector, self.lang_chbox)
+
+        self.nextrely -= 10
+        self.byte_editor = self.add(Editor, name='The Many Times', scroll_exit=False, max_width=70,
+                                    max_height=33)
+
+        self.key_display = self.add(Editor, name='Key', max_height=4, max_width=70)
         self.key_display.values = ['blabla']
 
         self.menu_main = self.add_menu(name="Main Menu", shortcut="^M")
 
         self.menu_run_challenge = self.menu_main.addNewSubmenu("Choose Challenge Script", "^R")
         self.menu_run_challenge.addItem(text="Just dummy right now", onSelect=self.dummy)
-
         self.menu_main.addItem(text="Exit", onSelect=self.exit_application, shortcut="^E")
 
     def dummy(self):
-        npyscreen.notify_confirm('Just dummy right now')
+        nps.notify_confirm('Just dummy right now')
 
     def exit_application(self):
         self.parentApp.setNextForm(None)
         self.editing = False
         self.parentApp.switchFormNow()
+
+
+
+
+
+
 
 strs = """
 CRIwqt4+szDbqkNY+I0qbNXPg1XLaCM5etQ5Bt9DRFV/xIN2k8Go7jtArLIy

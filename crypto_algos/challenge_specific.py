@@ -1,8 +1,10 @@
 import binascii
 import os
 import random
+import time
 import urllib.parse
 from crypto_algos import misc, aes, logger
+from crypto_algos.prng import MersenneTwister
 
 
 def setupECBSecretMaker(bstr_key, unittest_secret_portion=None):
@@ -104,3 +106,16 @@ def makeCBCPaddingOracle(key, IV):
         else:
             return None
     return _cbcPaddingOracle
+
+def mtSeedWithTimeStamp() -> int:
+    """
+    Set 3 / Ch. 22
+    :return: random number
+    """
+    seconds_range = (1, 21)
+    wait_seconds = random.randint(seconds_range[0], seconds_range[1])
+    time.sleep(wait_seconds)
+    mt = MersenneTwister(int(time.time()))
+    wait_seconds = random.randint(seconds_range[0], seconds_range[1])
+    time.sleep(wait_seconds)
+    return mt.get_random_number()

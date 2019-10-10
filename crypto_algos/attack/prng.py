@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-def mtUntemper():
+def mtUntemper(randNum: int) -> int:
     pass
 
 def mtUntwist():

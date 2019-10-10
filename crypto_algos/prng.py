@@ -9,7 +9,7 @@ def mersenneTwister(seed: int) -> int:
     pass
 
 # Not my code vvvv TODO: implement own version at some point
-class mersenne_rng(object):
+class MersenneTwister(object):
     def __init__(self, seed = 5489):
         self.state = [0]*624
         self.f = 1812433253

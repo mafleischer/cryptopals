@@ -32,12 +32,25 @@ def mtUntwist(stateArray: list) -> list:
     pass
 
 
-def tapMTFor624(mt: MersenneTwister) -> list:
-    pass
+def tapMTForValues(mt: MersenneTwister, num=624) -> list:
+    output_list = []
+    for i in range(624):
+        rnum = mt.get_random_number()
+        output_list.append(rnum)
 
 
-def mtCloneFromOutput(output_list: list) -> MersenneTwister:
+def mtWithStateFromList(output_list: list) -> MersenneTwister:
+    """
+    Takes a list of observed outputs from a MT and creates a
+    new MT with untempered values from output_list as its state
+    values
+    :param output_list: (min) 624 output values from a MT
+    :return: MersenneTwister object
+    """
     mt = MersenneTwister()
-    for state in output_list:
-        mt.state.append(state)
+    mt.state.clear()
+    for rnum in output_list:
+        state_v = mtUntemper(rnum)
+        mt.state.append(state_v)
+    mt.index = 624
     return mt

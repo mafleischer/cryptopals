@@ -12,7 +12,7 @@ def hasBlockRepetition(bstr):
             false otherwise
     """
 
-    state_iter = stateGenerator(bstr)
+    state_iter = stateGenerator(bstr, 16)
     state_list = [state for state in state_iter]
     for state in state_list:
         if state_list.count(state) > 1:

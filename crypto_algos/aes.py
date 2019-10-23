@@ -178,7 +178,7 @@ def aesEncrypt(bstr_msg, bstr_key, num_bits, mode='ecb', bstr_IV=None):
 
     # without padding for now
     #bstr_msg = misc.padPKCS7(bstr_msg, 16)
-    state_iter = stateGenerator(bstr_msg)
+    state_iter = stateGenerator(bstr_msg, 16)
     rounds = {128: 10, 192: 12, 256: 14}
     round_keys = aesKeyExpansion(bstr_key)
     cipher = b''
@@ -340,7 +340,7 @@ def aesDecrypt(bstr_cipher, bstr_key, num_bits, mode='ecb', bstr_IV=None):
         print("Unsuitable key length!")
         exit(1)
 
-    state_iter = stateGenerator(bstr_cipher)
+    state_iter = stateGenerator(bstr_cipher, 16)
     rounds = {128: 10, 192: 12, 256: 14}
     round_keys = aesKeyExpansion(bstr_key)
     cipher = b''
@@ -424,28 +424,17 @@ if __name__ == '__main__':
 
 
 def aesCTR(bstr, bstr_key, num_bits, bstr_nonce):
-    """ encryption and decryption is the same in this mode """
-    remainder = len(bstr) % 16
-    if remainder > 1:
-        bstr_cut = bstr[:-remainder]
-        bstr_remainder = bstr[-remainder:]
-    if remainder == 0:
-        bstr_cut = bstr
-    if remainder == 1:
-        bstr_cut = bstr[:-1]
-        bstr_remainder = bytes([bstr[-1]])
-    state_iter = stateGenerator(bstr_cut)
+    """ encryption and decryption is the same in this mode
+    """
+    state_iter = stateGenerator(bstr, 16, modis0=False)
     xored = b''
     counter = 0
     for state in state_iter:
         bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
         secondary_key = aesEncrypt(bstr_nonce_ctr, bstr_key, num_bits)
+        # this will be shorter than state len if the last state is remainder:
+        secondary_key = secondary_key[:len(state)]
         xored += xorBytestrings(state, secondary_key)
         counter += 1
-    if remainder > 0:
-        bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
-        secondary_key_remainder = aesEncrypt(
-            bstr_nonce_ctr, bstr_key, num_bits)[:remainder]
-        xored += xorBytestrings(bstr_remainder, secondary_key_remainder)
 
     return xored

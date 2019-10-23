@@ -34,7 +34,7 @@ def paddingOracleAttack(bstr_cipher, blocksize, fn_oracle, IV=None):
     """ Launch oracle attack on fn_oracle"""
     crafted_block = bytearray(blocksize * b'x')
     len_cipher = len(bstr_cipher)
-    state_iter = stateGenerator(bstr_cipher)
+    state_iter = stateGenerator(bstr_cipher, 16)
     state_list = [state for state in state_iter]
     num_states = len(state_list)
 

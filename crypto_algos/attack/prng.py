@@ -49,8 +49,6 @@ def mtWithStateFromList(output_list: list) -> MersenneTwister:
     """
     mt = MersenneTwister()
     mt.state.clear()
-    for rnum in output_list:
-        state_v = mtUntemper(rnum)
-        mt.state.append(state_v)
+    mt.state = [mtUntemper(rnum) for rnum in output_list]
     mt.index = 624
     return mt

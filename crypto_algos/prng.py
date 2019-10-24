@@ -27,7 +27,7 @@ class MersenneTwister(object):
         # update state
         self.state[0] = seed
         for i in range(1,624):
-            self.state[i] = self.int_32(self.f*(self.state[i-1]^(self.state[i-1]>>30)) + i)
+            self.state[i] = self.int_32(self.f * (self.state[i-1] ^ (self.state[i-1] >> 30)) + i)
 
     def twist(self):
         for i in range(624):

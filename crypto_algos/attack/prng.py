@@ -28,10 +28,6 @@ def mtUntemper(randNum: int) -> int:
     return res
 
 
-def mtUntwist(stateArray: list) -> list:
-    pass
-
-
 def tapMTForValues(mt: MersenneTwister, num=624) -> list:
     output_list = []
     for i in range(624):

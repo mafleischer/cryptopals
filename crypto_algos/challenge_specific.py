@@ -5,6 +5,7 @@ import time
 import urllib.parse
 from crypto_algos import misc, aes, logger
 from crypto_algos.prng import MersenneTwister
+from crypto_algos.helpers import xorBytestrings
 
 
 def setupECBSecretMaker(bstr_key, unittest_secret_portion=None):
@@ -119,3 +120,32 @@ def mtSeedWithTimeStamp() -> int:
     wait_seconds = random.randint(seconds_range[0], seconds_range[1])
     time.sleep(wait_seconds)
     return mt.get_random_number()
+
+
+def mtStreamCipher(bstr_msg: bytes, seed: int) -> bytes:
+    """
+    set 3 / ch. 24, en/decrypt with keystream generated from
+    MT random 8 bit numbers
+    :param bstr_msg:
+    :param seed: seed that will be converted to 16 bit (xored with 0xFFFF)
+    :return:
+    """
+    # 16 bit seed
+    random.seed(seed & 0xFFFF)
+    keystream = b''
+    for i in range(len(bstr_msg)):
+        rnum = random.getrandbits(8)
+        keystream += bytes([rnum])
+    return xorBytestrings(bstr_msg, keystream)
+
+
+def encWithRndPrefix(bstr_msg: bytes, seed: int) -> bytes:
+    """
+    set 3 / ch. 24 use mtStreamCipher and prepend chars before
+    :param bstr_msg:
+    :param seed:
+    :return:
+    """
+    numchars = random.randint(1, 50)
+    pre = "x" * numchars
+    return mtStreamCipher(pre + bstr_msg, seed)

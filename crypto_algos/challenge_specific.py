@@ -139,13 +139,14 @@ def mtStreamCipher(bstr_msg: bytes, seed: int) -> bytes:
     return xorBytestrings(bstr_msg, keystream)
 
 
-def encWithRndPrefix(bstr_msg: bytes, seed: int) -> bytes:
+def encMTWithRndPrefix(bstr_msg: bytes, seed: int) -> bytes:
     """
     set 3 / ch. 24 use mtStreamCipher and prepend chars before
     :param bstr_msg:
     :param seed:
     :return:
     """
-    numchars = random.randint(1, 50)
-    pre = "x" * numchars
+    mt = random.Random()
+    numchars = mt.randint(1, 50)
+    pre = b'x' * numchars
     return mtStreamCipher(pre + bstr_msg, seed)

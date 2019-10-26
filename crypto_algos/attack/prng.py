@@ -56,6 +56,7 @@ def crackMTSeedKnownPlain(bstr_cipher: bytes, bstr_known_plain: bytes,
                           offset: int, bits: int, seed_bits: int) -> int:
     """
     From a known plaintext recover the seed
+    TODO: for bits to be other sizes too some lines need to be changed
     :param bstr_cipher:
     :param bstr_known_plain:
     :param offset: the known plain text starts at this position in the cipher text

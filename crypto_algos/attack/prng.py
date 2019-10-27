@@ -80,6 +80,7 @@ def crackMTSeedKnownPlain(bstr_cipher: bytes, bstr_known_plain: bytes,
         plain = xorBytestrings(known_plain_cipher, keystream)
         if plain == bstr_known_plain:
             return seed
+    return None
 
 
 def hasTokenCurrentTimeSeed(token: int, time_range: tuple) -> bool:

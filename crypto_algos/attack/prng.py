@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import random
+import time
 from crypto_algos.prng import MersenneTwister
 from crypto_algos.helpers import xorBytestrings
 
@@ -79,3 +80,12 @@ def crackMTSeedKnownPlain(bstr_cipher: bytes, bstr_known_plain: bytes,
         plain = xorBytestrings(known_plain_cipher, keystream)
         if plain == bstr_known_plain:
             return seed
+
+
+def hasTokenCurrentTimeSeed(token: int, time_range: tuple) -> bool:
+    current_time = int(time.time())
+    it = tuple(random.Random(current_time + diff).getrandbits(32) == True for diff in range(time_range[0], time_range[1] + 1))
+    if any(random.Random(current_time + diff).getrandbits(32) == token
+           for diff in range(time_range[0], time_range[1] + 1)):
+        return True
+    return False

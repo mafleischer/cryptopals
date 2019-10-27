@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 
 import random
+import time
 
 from crypto_algos.challenge_specific import mtStreamCipher, encMTWithRndPrefix
-from crypto_algos.attack.prng import crackMTSeedKnownPlain
+from crypto_algos.attack.prng import crackMTSeedKnownPlain, hasTokenCurrentTimeSeed
 from crypto_algos.helpers import xorBytestrings
 
 if __name__ == '__main__':
@@ -19,3 +20,13 @@ if __name__ == '__main__':
                                            len(cipher) - len(known_plain), 8, 16)
     print('Recovered seed: {}'.format(seed_recovered))
     print(mtStreamCipher(cipher, seed_recovered))
+
+    # second part of ch. 24
+    current_time = int(time.time())
+    mt = random.Random(current_time)
+    token = mt.getrandbits(32)
+    time_range = (-100, 100)
+    if hasTokenCurrentTimeSeed(token,time_range):
+        print('Token has current time seed.')
+    else:
+        print('Token does not have current time seed.')

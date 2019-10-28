@@ -438,3 +438,6 @@ def aesCTR(bstr, bstr_key, num_bits, bstr_nonce):
         counter += 1
 
     return xored
+
+def aesCTREdit(bstr_cipher: bytes, bstr_key: bytes, offset: int, bstr_newtext) -> bytes:
+    pass

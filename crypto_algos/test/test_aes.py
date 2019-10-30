@@ -2,6 +2,7 @@ import unittest
 import numpy as np
 import base64
 from crypto_algos import aes
+from crypto_algos import exceptions
 
 
 class TestAESEncrypt(unittest.TestCase):
@@ -119,12 +120,35 @@ class TestAESDecrypt(unittest.TestCase):
         self.assertEqual(clear, clear_expected)
 
 class TestAESCTR(unittest.TestCase):
+
     def testAESCTREncrypt(self):
         cipher = base64.b64decode('L77na/nrFsKvynd6HzOoG7GHTLXsTVu9qvY/2syLXzhPweyyMTJULu/6/kXX0KSvoOLSFQ==')
         key = b'YELLOW SUBMARINE'
         nonce = bytes(8)
         clear = aes.aesCTR(cipher, key, 128, nonce)
-        self.assertEqual(b"Yo, VIP Let's kick it Ice, Ice, baby Ice, Ice, baby ", clear)
+        self.assertEqual(clear, b"Yo, VIP Let's kick it Ice, Ice, baby Ice, Ice, baby ")
+
+    def testAESCTREdit(self):
+        res = aes.aesCTR(b'1234567812345678', b'x' * 16, 128, b'12345678')
+        cipher = bytearray(res)
+        edit = aes.aesCTREdit(cipher, b'x' * 16, b'12345678', 128, 0, b'X')
+        clear = aes.aesCTR(cipher, b'x' * 16, 128, b'12345678')
+        self.assertEqual(clear, b'X234567812345678')
+
+        cipher = bytearray(res)
+        edit = aes.aesCTREdit(cipher, b'x' * 16, b'12345678', 128, 0, b'XY')
+        clear = aes.aesCTR(cipher, b'x' * 16, 128, b'12345678')
+        self.assertEqual(clear, b'XY34567812345678')
+
+        cipher = bytearray(res)
+        edit = aes.aesCTREdit(cipher, b'x' * 16, b'12345678', 128, 1, b'XY')
+        clear = aes.aesCTR(cipher, b'x' * 16, 128, b'12345678')
+        self.assertEqual(clear, b'1XY4567812345678')
+
+        cipher = bytearray(res)
+        self.assertRaises(exceptions.ParamClashError, aes.aesCTREdit, cipher,
+                          b'x' * 16, b'12345678', 128, 15, b'XY')
+
 
 if __name__ == '__main__':
     unittest.main()

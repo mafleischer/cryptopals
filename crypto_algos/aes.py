@@ -433,7 +433,6 @@ def aesCTR(bstr, bstr_key, num_bits, bstr_nonce):
     for state in state_iter:
         bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
         secondary_key = aesEncrypt(bstr_nonce_ctr, bstr_key, num_bits)
-        print('AES CTR KEY {}'.format(secondary_key))
         # this will be shorter than state len if the last state is remainder:
         secondary_key = secondary_key[:len(state)]
         xored += xorBytestrings(state, secondary_key)
@@ -465,7 +464,6 @@ def aesCTREdit(barray_cipher: bytes, bstr_key: bytes, bstr_nonce: bytes, bits: i
     counter = offset // 16
     bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
     secondary_key = aesEncrypt(bstr_nonce_ctr, bstr_key, bits)
-    print('CTR EDIT KEY {}'.format(secondary_key))
 
     sg = stateGenerator(barray_cipher, 16, modis0=False)
     # forward to proper block
@@ -475,8 +473,6 @@ def aesCTREdit(barray_cipher: bytes, bstr_key: bytes, bstr_nonce: bytes, bits: i
 
     index_in_block = offset % 16
     secondary_key_sub = secondary_key[index_in_block : index_in_block + len(bstr_newtext)]
-    print(index_in_block)
-    print(secondary_key_sub)
 
     new_cipher = xorBytestrings(bstr_newtext, secondary_key_sub)
 

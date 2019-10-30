@@ -6,6 +6,7 @@ import struct
 
 from crypto_algos.helpers import rotateList, stateGenerator, makeNDArrayFrom, xorBytestrings
 from crypto_algos import misc
+from crypto_algos import exceptions
 
 # multiplicative inverse, galois field; used to obscure the relationship between key and cipher
 # composed of balanced highly nonlinear Boolean Functions
@@ -432,6 +433,7 @@ def aesCTR(bstr, bstr_key, num_bits, bstr_nonce):
     for state in state_iter:
         bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
         secondary_key = aesEncrypt(bstr_nonce_ctr, bstr_key, num_bits)
+        print('AES CTR KEY {}'.format(secondary_key))
         # this will be shorter than state len if the last state is remainder:
         secondary_key = secondary_key[:len(state)]
         xored += xorBytestrings(state, secondary_key)
@@ -439,5 +441,47 @@ def aesCTR(bstr, bstr_key, num_bits, bstr_nonce):
 
     return xored
 
-def aesCTREdit(bstr_cipher: bytes, bstr_key: bytes, offset: int, bstr_newtext) -> bytes:
-    pass
+def aesCTREdit(barray_cipher: bytes, bstr_key: bytes, bstr_nonce: bytes, bits: int,
+               offset: int, bstr_newtext) -> bytes:
+    """
+    set 4 / ch. 25
+    Edit AES CTR text encrypted in place at offset. Therefor generate the key bytes from that
+    offset on, ecrypt the newtext and replace.
+    :param barray_cipher: AES CTR encrypted plain text, bytearray that will be changed
+    :param bstr_key: key
+    :param bstr_nonce:
+    :param bits:
+    :param offset: offset
+    :param bstr_newtext: new plain text (not going beyond the end of the cipher)
+    :return:
+    """
+
+    if offset >= len(barray_cipher):
+        raise exceptions.ParamValueError
+
+    if len(bstr_newtext) > len(barray_cipher) - offset:
+        raise exceptions.ParamClashError
+
+    counter = offset // 16
+    bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
+    secondary_key = aesEncrypt(bstr_nonce_ctr, bstr_key, bits)
+    print('CTR EDIT KEY {}'.format(secondary_key))
+
+    sg = stateGenerator(barray_cipher, 16, modis0=False)
+    # forward to proper block
+    for i in range(counter):
+        sg.__next__()
+    edit_cipher_block = sg.__next__()
+
+    index_in_block = offset % 16
+    secondary_key_sub = secondary_key[index_in_block : index_in_block + len(bstr_newtext)]
+    print(index_in_block)
+    print(secondary_key_sub)
+
+    new_cipher = xorBytestrings(bstr_newtext, secondary_key_sub)
+
+    if len(bstr_newtext) == 1:
+        barray_cipher[offset] = new_cipher[0]
+    else:
+        barray_cipher[offset : offset+len(bstr_newtext)] = new_cipher
+    #return barray_cipher

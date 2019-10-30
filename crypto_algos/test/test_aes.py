@@ -129,25 +129,35 @@ class TestAESCTR(unittest.TestCase):
         self.assertEqual(clear, b"Yo, VIP Let's kick it Ice, Ice, baby Ice, Ice, baby ")
 
     def testAESCTREdit(self):
-        res = aes.aesCTR(b'1234567812345678', b'x' * 16, 128, b'12345678')
+        key = b'x' * 16
+        nonce = b'y' * 8
+
+        res = aes.aesCTR(b'1234567812345678', key, 128, nonce)
         cipher = bytearray(res)
-        edit = aes.aesCTREdit(cipher, b'x' * 16, b'12345678', 128, 0, b'X')
-        clear = aes.aesCTR(cipher, b'x' * 16, 128, b'12345678')
+        edit = aes.aesCTREdit(cipher, key, nonce, 128, 0, b'X')
+        clear = aes.aesCTR(cipher, key, 128, nonce)
         self.assertEqual(clear, b'X234567812345678')
 
         cipher = bytearray(res)
-        edit = aes.aesCTREdit(cipher, b'x' * 16, b'12345678', 128, 0, b'XY')
-        clear = aes.aesCTR(cipher, b'x' * 16, 128, b'12345678')
+        edit = aes.aesCTREdit(cipher, key, nonce, 128, 0, b'XY')
+        clear = aes.aesCTR(cipher, key, 128, nonce)
         self.assertEqual(clear, b'XY34567812345678')
 
         cipher = bytearray(res)
-        edit = aes.aesCTREdit(cipher, b'x' * 16, b'12345678', 128, 1, b'XY')
-        clear = aes.aesCTR(cipher, b'x' * 16, 128, b'12345678')
+        edit = aes.aesCTREdit(cipher, key, nonce, 128, 1, b'XY')
+        clear = aes.aesCTR(cipher, key, 128, nonce)
         self.assertEqual(clear, b'1XY4567812345678')
 
         cipher = bytearray(res)
         self.assertRaises(exceptions.ParamClashError, aes.aesCTREdit, cipher,
-                          b'x' * 16, b'12345678', 128, 15, b'XY')
+                          key, nonce, 128, 15, b'XY')
+
+        # over more than one block
+        cipher = aes.aesCTR(b'1234567812345678' * 2, key, 128, nonce)
+        cipher = bytearray(cipher)
+        edit = aes.aesCTREdit(cipher, key, nonce, 128, 0, b'X' * 31)
+        clear = aes.aesCTR(cipher, key, 128, nonce)
+        self.assertEqual(clear, b'X' * 31 + b'8')
 
 
 if __name__ == '__main__':

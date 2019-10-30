@@ -441,7 +441,7 @@ def aesCTR(bstr, bstr_key, num_bits, bstr_nonce):
     return xored
 
 def aesCTREdit(barray_cipher: bytes, bstr_key: bytes, bstr_nonce: bytes, bits: int,
-               offset: int, bstr_newtext) -> bytes:
+               offset: int, bstr_newtext: bytes):
     """
     set 4 / ch. 25
     Edit AES CTR text encrypted in place at offset. Therefor generate the key bytes from that
@@ -462,14 +462,13 @@ def aesCTREdit(barray_cipher: bytes, bstr_key: bytes, bstr_nonce: bytes, bits: i
         raise exceptions.ParamClashError
 
     counter = offset // 16
-    bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
-    secondary_key = aesEncrypt(bstr_nonce_ctr, bstr_key, bits)
-
-    sg = stateGenerator(barray_cipher, 16, modis0=False)
-    # forward to proper block
-    for i in range(counter):
-        sg.__next__()
-    edit_cipher_block = sg.__next__()
+    keybytes_to_generate = len(bstr_newtext)
+    secondary_key = b''
+    while keybytes_to_generate > 0:
+        bstr_nonce_ctr = bstr_nonce + struct.pack('<q', counter)
+        secondary_key += aesEncrypt(bstr_nonce_ctr, bstr_key, bits)
+        counter += 1
+        keybytes_to_generate -= 1
 
     index_in_block = offset % 16
     secondary_key_sub = secondary_key[index_in_block : index_in_block + len(bstr_newtext)]
@@ -480,4 +479,3 @@ def aesCTREdit(barray_cipher: bytes, bstr_key: bytes, bstr_nonce: bytes, bits: i
         barray_cipher[offset] = new_cipher[0]
     else:
         barray_cipher[offset : offset+len(bstr_newtext)] = new_cipher
-    #return barray_cipher

@@ -1,12 +1,22 @@
 #!/usr/bin/python3
 
+from crypto_algos.helpers import xorBytestrings
 from crypto_algos.aes import aesCTR, aesCTREdit
+from crypto_algos.attack.streamcipher.ctr import aesCTREditRecoverPlain
 
 if __name__ == '__main__':
-    cipher = aesCTR(b'1234567812345678', b'x'*16, 128, b'12345678')
-    print(cipher)
+    key = b'x' * 16
+    nonce = b'12345678'
+
+    # editing
+    cipher = aesCTR(b'12345678123456781234567812345678', key, 128, nonce)
     cipher = bytearray(cipher)
-    edit = aesCTREdit(cipher, b'x' * 16, b'12345678', 128, 13, b'XYZ')
-    print(cipher)
-    clear = aesCTR(cipher, b'x'*16, 128, b'12345678')
+    edit = aesCTREdit(cipher, key, nonce, 128, 0, b'X' * 3)
+    clear = aesCTR(cipher, b'x'*16, 128, nonce)
     print(clear)
+
+    # recover plain text
+    cipher = aesCTR(b'12345678123456781234567812345678', key, 128, nonce)
+    cipher = bytearray(cipher)
+    plain = aesCTREditRecoverPlain(aesCTREdit, cipher, key, nonce, 128, 0, b'X')
+    print(plain)

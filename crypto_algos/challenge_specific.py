@@ -70,7 +70,7 @@ def setupCBCSecretMaker(bstr_key, bstr_IV):
     bstr_prefix = b'comment1=cooking%20MCs;userdata='
     bstr_suffix = b';comment2=%20like%20a%20pound%20of%20bacon'
 
-    def _ecbAppendMakeSecret(bstr_chosen):
+    def _cbcAppendMakeSecret(bstr_chosen):
         blocksize = 16
         #bstr_urlencoded_chosen = bytes(urllib.parse.quote_plus(bstr_chosen), 'ascii')
         bstr_urlencoded_chosen = bstr_chosen
@@ -78,7 +78,25 @@ def setupCBCSecretMaker(bstr_key, bstr_IV):
             bstr_prefix + bstr_urlencoded_chosen + bstr_suffix, blocksize)
         return aes.aesEncrypt(bstr_clear, bstr_key, 128, mode='cbc', bstr_IV=bstr_IV)
 
-    return _ecbAppendMakeSecret
+    return _cbcAppendMakeSecret
+
+
+def setupCTRSecretMaker(bstr_key, bstr_nonce):
+    """
+    challenge 16
+    """
+    bstr_prefix = b'comment1=cooking%20MCs;userdata='
+    bstr_suffix = b';comment2=%20like%20a%20pound%20of%20bacon'
+
+    def _ctrAppendMakeSecret(bstr_chosen):
+        blocksize = 16
+        #bstr_urlencoded_chosen = bytes(urllib.parse.quote_plus(bstr_chosen), 'ascii')
+        bstr_urlencoded_chosen = bstr_chosen
+        bstr_clear = misc.padPKCS7(
+            bstr_prefix + bstr_urlencoded_chosen + bstr_suffix, blocksize)
+        return aes.aesCTR(bstr_clear, bstr_key, 128, bstr_nonce)
+
+    return _ctrAppendMakeSecret
 
 
 class InvalidPKCS7Error(Exception):

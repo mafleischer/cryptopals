@@ -40,3 +40,17 @@ if __name__ == '__main__':
         print("Admin perm")
     else:
         print("No admin perm")
+
+    # bit flip version:
+    userdata = b'bla:admin<true'
+    ctr_secret_fn = setupCTRSecretMaker(key, nonce)
+    cipher = ctr_secret_fn(userdata)
+    cipher = bytearray(cipher)
+    # ; and = is 1 after : and <
+    cipher[35] = cipher[35] ^ 1
+    cipher[41] = cipher[41] ^ 1
+
+    if _checkAdminPerm(cipher, key, nonce):
+        print("Admin perm")
+    else:
+        print("No admin perm")

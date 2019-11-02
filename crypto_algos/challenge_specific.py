@@ -80,6 +80,35 @@ def setupCBCSecretMaker(bstr_key, bstr_IV):
 
     return _cbcAppendMakeSecret
 
+def _checkASCII(bstr_clear: bytes) -> Union[None, str]:
+    """
+    Checks string for non ascii chars (< 32 and > 126)
+    set 4 / ch. 27
+    :param bstr_clear:
+    :return: None if ascii compliant. Else error msg with string
+    """
+    for b in bstr_clear:
+        if b < 32 or b > 126:
+            return 'String {} contains non-ascii characters.'.format())
+    return None
+
+def setupCBCSecretMakerCheckASCII(bstr_key, bstr_IV):
+    """
+    set 4 / challenge 27
+    """
+    bstr_prefix = b'comment1=cooking%20MCs;userdata='
+    bstr_suffix = b';comment2=%20like%20a%20pound%20of%20bacon'
+
+    def _cbcAppendMakeSecret(bstr_chosen):
+        blocksize = 16
+        #bstr_urlencoded_chosen = bytes(urllib.parse.quote_plus(bstr_chosen), 'ascii')
+        bstr_urlencoded_chosen = bstr_chosen
+        bstr_clear = misc.padPKCS7(
+            bstr_prefix + bstr_urlencoded_chosen + bstr_suffix, blocksize)
+        return aes.aesEncrypt(bstr_clear, bstr_key, 128, mode='cbc', bstr_IV=bstr_IV)
+
+    return _cbcAppendMakeSecret
+
 
 def setupCTRSecretMaker(bstr_key, bstr_nonce):
     """

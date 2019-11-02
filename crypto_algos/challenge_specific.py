@@ -101,13 +101,25 @@ def setupCBCSecretMakerCheckASCII(bstr_key: bytes, bstr_IV: bytes) -> bytes:
 
     def _cbcAppendMakeSecret(bstr_chosen):
         blocksize = 16
-        #bstr_urlencoded_chosen = bytes(urllib.parse.quote_plus(bstr_chosen), 'ascii')
+        bstr_urlencoded_chosen = bytes(urllib.parse.quote_plus(bstr_chosen), 'ascii')
         bstr_urlencoded_chosen = bstr_chosen
+        msg = _checkASCII(bstr_chosen)
+        if msg:
+            return msg
         bstr_clear = misc.padPKCS7(
             bstr_prefix + bstr_urlencoded_chosen + bstr_suffix, blocksize)
         return aes.aesEncrypt(bstr_clear, bstr_key, 128, mode='cbc', bstr_IV=bstr_IV)
 
     return _cbcAppendMakeSecret
+
+
+def decryptCBCCheckASCII(bstr_cipher: bytes, bstr_key: bytes,
+                         bstr_IV: bytes) -> bytes:
+    res = aes.aesDecrypt(bstr_cipher, bstr_key, 128, mode='cbc', bstr_IV=bstr_IV)
+    msg = _checkASCII(res)
+    if msg:
+        return msg
+    return 'Decrypted Cipher...'
 
 
 def setupCTRSecretMaker(bstr_key, bstr_nonce):

@@ -89,10 +89,10 @@ def _checkASCII(bstr_clear: bytes) -> Union[None, str]:
     """
     for b in bstr_clear:
         if b < 32 or b > 126:
-            return 'String {} contains non-ascii characters.'.format())
+            return 'String {} contains non-ascii characters.'.format(bstr_clear)
     return None
 
-def setupCBCSecretMakerCheckASCII(bstr_key, bstr_IV):
+def setupCBCSecretMakerCheckASCII(bstr_key: bytes, bstr_IV: bytes) -> bytes:
     """
     set 4 / challenge 27
     """

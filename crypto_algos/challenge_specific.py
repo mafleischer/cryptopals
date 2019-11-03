@@ -80,7 +80,7 @@ def setupCBCSecretMaker(bstr_key, bstr_IV):
 
     return _cbcAppendMakeSecret
 
-def _checkASCII(bstr_clear: bytes) -> Union[None, str]:
+def _checkASCII(bstr_clear: bytes) -> str:
     """
     Checks string for non ascii chars (< 32 and > 126)
     set 4 / ch. 27
@@ -115,7 +115,15 @@ def setupCBCSecretMakerCheckASCII(bstr_key: bytes, bstr_IV: bytes) -> bytes:
 
 def decryptCBCCheckASCII(bstr_cipher: bytes, bstr_key: bytes,
                          bstr_IV: bytes) -> bytes:
+    """
+    set 4 / ch. 27
+    :param bstr_cipher:
+    :param bstr_key:
+    :param bstr_IV:
+    :return:
+    """
     res = aes.aesDecrypt(bstr_cipher, bstr_key, 128, mode='cbc', bstr_IV=bstr_IV)
+    res = misc.unpadPKCS7(res, 16)
     msg = _checkASCII(res)
     if msg:
         return msg

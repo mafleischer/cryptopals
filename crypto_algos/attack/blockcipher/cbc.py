@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
+import types, re
 from crypto_algos.challenge_specific import InvalidPKCS7Error
 from crypto_algos.helpers import stateGenerator
+from crypto_algos import aes
 
 
 def cipherWFlippedBytesGenerator(bstr_cipher, *indexes):
@@ -83,3 +85,18 @@ def paddingOracleAttack(bstr_cipher, blocksize, fn_oracle, IV=None):
         first_block = second_block
 
     return clear
+
+
+def recoverIV(bstr_cipher: bytes, decryption_fn: types.FunctionType, num_bytes: int) -> bytes:
+    """
+    set 4 / challenge 27
+
+    :param bstr_cipher:
+    :param decryption_fn:
+    :param num_bytes:
+    :return:
+    """
+    first_block = bstr_cipher[:num_bytes]
+    null_block = b'\x00' * num_bytes
+    crafted_cipher = first_block
+    msg = decryption_fn(bstr_cipher)

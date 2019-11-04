@@ -1,0 +1,3 @@
+[submodule "crypto_algos/submodules/sha1"]
+	path = crypto_algos/submodules/sha1
+	url = https://github.com/ajalt/python-sha1

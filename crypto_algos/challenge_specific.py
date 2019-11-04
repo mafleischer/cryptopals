@@ -139,7 +139,7 @@ def setupCTRSecretMaker(bstr_key, bstr_nonce):
 
     def _ctrAppendMakeSecret(bstr_chosen):
         blocksize = 16
-        #bstr_urlencoded_chosen = bytes(urllib.parse.quote_plus(bstr_chosen), 'ascii')
+        #bstr_uurlencoded_chosen = bytes(urllib.parse.quote_plus(bstr_chosen), 'ascii')
         bstr_urlencoded_chosen = bstr_chosen
         bstr_clear = misc.padPKCS7(
             bstr_prefix + bstr_urlencoded_chosen + bstr_suffix, blocksize)

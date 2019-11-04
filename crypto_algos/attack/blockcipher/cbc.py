@@ -2,7 +2,7 @@
 
 import types, re
 from crypto_algos.challenge_specific import InvalidPKCS7Error
-from crypto_algos.helpers import stateGenerator
+from crypto_algos.helpers import stateGenerator, xorBytestrings
 from crypto_algos import aes
 
 
@@ -87,16 +87,17 @@ def paddingOracleAttack(bstr_cipher, blocksize, fn_oracle, IV=None):
     return clear
 
 
-def recoverIV(bstr_cipher: bytes, decryption_fn: types.FunctionType, num_bytes: int) -> bytes:
+def recoverIV(bstr_clear: bytes, num_bytes: int) -> bytes:
     """
     set 4 / challenge 27
 
     :param bstr_cipher:
-    :param decryption_fn:
     :param num_bytes:
     :return:
     """
-    first_block = bstr_cipher[:num_bytes]
-    null_block = b'\x00' * num_bytes
-    crafted_cipher = first_block
-    msg = decryption_fn(bstr_cipher)
+    # first_block = bstr_cipher[:num_bytes]
+    # null_block = b'\x00' * num_bytes
+    # crafted_cipher = first_block + null_block + first_block
+
+    IV = xorBytestrings(bstr_clear[:num_bytes], bstr_clear[2 * num_bytes : 3 *num_bytes])
+    return IV
